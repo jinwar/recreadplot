@@ -11,12 +11,14 @@ norm_amp = 1;
 isfill = 0;
 is_reduce_v = 0;
 ref_v = 10;
+is_dist = 1;
 
 stlas = [stadata.stla];
 stlos = [stadata.stlo];
-dists = distance(stlas,stlos,evla,evlo);
+[dists azi] = distance(evla,evlo,stlas,stlos);
 dist_range = [min(dists) max(dists)];
 time_range = [500 3700];
+azi_range = [min(azi) max(azi)];
 zoom_level = 1;
 hist_time_range(zoom_level,:) = time_range;
 hist_dist_range(zoom_level,:) = dist_range;
@@ -67,7 +69,7 @@ while 1
 			max_amp(ista) = NaN;
 		end
 	end
-	norm_amp = nanmean(max_amp);
+	norm_amp = nanmedian(max_amp);
 	for ista = 1:length(stadata)
 		if dists(ista) < dist_range(1) || dists(ista) > dist_range(2)
 			continue;
@@ -88,14 +90,27 @@ while 1
 		else
 			data = data./norm_amp;
 		end
-		trace_amp = amp*diff(dist_range)/N_trace;
-		plot(timeaxis,data*trace_amp+dists(ista),'k');
-		if isfill
-			data(find(data < 0)) = 0;
-			area(timeaxis,data*trace_amp+dists(ista),dists(ista),'facecolor','k');
+		if is_dist
+			trace_amp = amp*diff(dist_range)/N_trace;
+			plot(timeaxis,data*trace_amp+dists(ista),'k');
+			if isfill
+				data(find(data < 0)) = 0;
+				area(timeaxis,data*trace_amp+dists(ista),dists(ista),'facecolor','k');
+			end
+		else
+			trace_amp = amp*diff(azi_range)/N_trace;
+			plot(timeaxis,data*trace_amp+azi(ista),'k');
+			if isfill
+				data(find(data < 0)) = 0;
+				area(timeaxis,data*trace_amp+azi(ista),azi(ista),'facecolor','k');
+			end
 		end
 	end
-	ylim(dist_range);
+	if is_dist
+		ylim(dist_range);
+	else
+		ylim(azi_range);
+	end
 	xlim(time_range);
 	switch comp
 		case 1
@@ -122,14 +137,25 @@ while 1
 	end
 	title(['Comp: ',comp_name,' Frequency Band: ',band_name, ' Reduce Vel: ',refvstr],'fontsize',15);
 	xlabel('Time /s','fontsize',15)
-	ylabel('Distance /degree','fontsize',15)
+	if is_dist
+		ylabel('Distance /degree','fontsize',15)
+	else
+		ylabel('Azimuth /degree','fontsize',15)
+	end
 
 	[x y bot] = ginput(1);
+	if ~is_dist
+		is_dist = 1;
+		continue;
+	end
 	if bot == 'q'
 		break;
 	end
 	if bot == 'f'
 		isfill = ~isfill;
+	end
+	if bot == 'd'
+		is_dist = ~is_dist;
 	end
 	if bot == 'a'
 		[x2 y2 ampstr] = ginput(1);
@@ -137,6 +163,9 @@ while 1
 		if temp > 0 & temp < 10
 			amp = temp;
 		end
+	end
+	if bot == 'n'
+		single_norm = ~single_norm;
 	end
 	if bot == 'v'
 		is_reduce_v = ~is_reduce_v;
@@ -157,7 +186,6 @@ while 1
 		text(x2,y2,num2str(ref_v),'color','r','fontsize',15);
 		[x2 y2] = ginput(1);
 	end
-
 	if bot == 'x'  % changing time range
 		[x2 y2] = ginput(1);
 		if x2 > x
@@ -187,6 +215,13 @@ while 1
 		time_range = hist_time_range(zoom_level,:);
 		dist_range = hist_dist_range(zoom_level,:);
 		isfill = 0;
+	end
+	if bot == 'O' % reset
+		zoom_level = 1;
+		time_range = hist_time_range(zoom_level,:);
+		dist_range = hist_dist_range(zoom_level,:);
+		isfill = 0;
+		is_reduce_v = 0;
 	end
 	if bot == 'r'
 		comp = 2;
