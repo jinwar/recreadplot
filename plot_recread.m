@@ -86,20 +86,25 @@ while 1
 			data = data./max(abs(data));
 		else
 			data = data./norm_amp;
+			if max(abs(data)) > 5
+				data(:) = 0;
+			end
 		end
 		if is_dist
 			trace_amp = amp*diff(dist_range)/N_trace;
 			plot(timeaxis,data*trace_amp+dists(ista),'k');
 			if isfill
-				data(find(data < 0)) = 0;
-				area(timeaxis,data*trace_amp+dists(ista),dists(ista),'facecolor','k');
+				data(find(data > 0)) = 0;
+				area(timeaxis,data*trace_amp+dists(ista),dists(ista),'facecolor','r');
 			end
 		else
+			ind = find(dists>dist_range(1) & dists < dist_range(2));
+			azi_range = [min(azi(ind)) max(azi(ind))];
 			trace_amp = amp*diff(azi_range)/N_trace;
 			plot(timeaxis,data*trace_amp+azi(ista),'k');
 			if isfill
-				data(find(data < 0)) = 0;
-				area(timeaxis,data*trace_amp+azi(ista),azi(ista),'facecolor','k');
+				data(find(data > 0)) = 0;
+				area(timeaxis,data*trace_amp+azi(ista),azi(ista),'facecolor','r');
 			end
 		end
 	end
@@ -174,7 +179,15 @@ while 1
 	end
 	if bot == 'i'
 		rayp = input('Reduce slowness(s/deg):');
-		ref_v = deg2km(1/rayp);
+		new_ref_v = deg2km(1/rayp);
+		if is_reduce_v
+			time_range = time_range + deg2km(mean(dist_range))./ref_v - deg2km(mean(dist_range))./new_ref_v;;
+			for izoom = 1:size(hist_time_range,1)
+				hist_time_range(izoom,:) = hist_time_range(izoom,:) ...
+					+ deg2km(mean(dist_range))./ref_v - deg2km(mean(dist_range))./new_ref_v;
+			end
+		end
+		ref_v = new_ref_v;
 	end
 
 	if bot == 'n'
@@ -198,10 +211,18 @@ while 1
 		[x2 y2] = ginput(1);
 		plot([x x2],[y y2],'r');
 		if ~is_reduce_v
-			ref_v = deg2km(y2 - y)./(x2 - x);
+			new_ref_v = deg2km(y2 - y)./(x2 - x);
 		else
-			ref_v = deg2km(y2 - y)./(x2 - x + deg2km(y2-y)/ref_v)
+			new_ref_v = deg2km(y2 - y)./(x2 - x + deg2km(y2-y)/ref_v)
 		end
+		if is_reduce_v
+			time_range = time_range + deg2km(mean(dist_range))./ref_v - deg2km(mean(dist_range))./new_ref_v;;
+			for izoom = 1:size(hist_time_range,1)
+				hist_time_range(izoom,:) = hist_time_range(izoom,:) ...
+					+ deg2km(mean(dist_range))./ref_v - deg2km(mean(dist_range))./new_ref_v;
+			end
+		end
+		ref_v = new_ref_v;
 		text(x2,y2,num2str(ref_v),'color','r','fontsize',15);
 		[x2 y2] = ginput(1);
 	end

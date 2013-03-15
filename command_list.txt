@@ -1,0 +1,24 @@
+plot_recread.m Command List:
+
+x : Zoom in for time
+y : Zoom in for dist
+o : back one zoom level
+O : reset zoom level and other setting.
+
+z : show BHZ component
+r : show BHR component
+t : show BHT component
+l : low frequency band
+m : middle frequency band
+h : high frequency band
+0 : raw data
+
+v : turn on or off velocity reduction
+p : pick the slowness of a phase
+i : manually input the horizonal slowness for velocity reduction
+
+/ : show station map within the distance range
+f : fill the area above zero
+a + 1-9 : change the amplitude
+n : change between individual normalize or global normalize
+d : change between distance plot and azimuth plot
