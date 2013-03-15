@@ -39,13 +39,13 @@ stah = plotm(stlas(ind),stlos(ind),'rv');
 
 
 while 1
-%	figure(89)
-%	if exist('stah','var')
-%		delete(stah)
-%		clear stah
-%	end
-%	ind = find(dists>dist_range(1) & dists < dist_range(2));
-%	stah = plotm(stlas(ind),stlos(ind),'rv');
+	figure(89)
+	if exist('stah','var')
+		delete(stah)
+		clear stah
+	end
+	ind = find(dists>dist_range(1) & dists < dist_range(2));
+	stah = plotm(stlas(ind),stlos(ind),'rv');
 
 	figure(99)
 	clf
@@ -132,10 +132,12 @@ while 1
 	end
 	if is_reduce_v
 		refvstr = [num2str(ref_v),' km/s'];
+		raypstr = [num2str(1/km2deg(ref_v)), ' s/deg '];
 	else
 		refvstr = 'None';
+		raypstr = 'None';
 	end
-	title(['Comp: ',comp_name,' Frequency Band: ',band_name, ' Reduce Vel: ',refvstr],'fontsize',15);
+	title(['Comp: ',comp_name,' Band: ',band_name, ' Vel: ',refvstr, ' rayP: ', raypstr],'fontsize',15);
 	xlabel('Time /s','fontsize',15)
 	if is_dist
 		ylabel('Distance /degree','fontsize',15)
@@ -164,6 +166,11 @@ while 1
 			amp = temp;
 		end
 	end
+	if bot == 'i'
+		rayp = input('Reduce slowness(s/deg):');
+		ref_v = deg2km(1/rayp);
+	end
+
 	if bot == 'n'
 		single_norm = ~single_norm;
 	end
@@ -222,6 +229,10 @@ while 1
 		dist_range = hist_dist_range(zoom_level,:);
 		isfill = 0;
 		is_reduce_v = 0;
+		single_norm = 1;
+		amp = 5;
+		ref_v = 10;
+		is_dist = 1;
 	end
 	if bot == 'r'
 		comp = 2;
