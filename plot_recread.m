@@ -18,6 +18,9 @@ stlos = [stadata.stlo];
 [dists azi] = distance(evla,evlo,stlas,stlos);
 dist_range = [min(dists) max(dists)];
 time_range = [500 3700];
+ori_dist_range = dist_range;
+ori_time_range = time_range;
+time_range = [500 3700];
 azi_range = [min(azi) max(azi)];
 zoom_level = 1;
 hist_time_range(zoom_level,:) = time_range;
@@ -39,13 +42,7 @@ stah = plotm(stlas(ind),stlos(ind),'rv');
 
 
 while 1
-	figure(89)
-	if exist('stah','var')
-		delete(stah)
-		clear stah
-	end
-	ind = find(dists>dist_range(1) & dists < dist_range(2));
-	stah = plotm(stlas(ind),stlos(ind),'rv');
+
 
 	figure(99)
 	clf
@@ -153,6 +150,15 @@ while 1
 	if bot == 'q'
 		break;
 	end
+	if bot == '/'
+		figure(89)
+		if exist('stah','var')
+			delete(stah)
+			clear stah
+		end
+		ind = find(dists>dist_range(1) & dists < dist_range(2));
+		stah = plotm(stlas(ind),stlos(ind),'rv');	
+	end
 	if bot == 'f'
 		isfill = ~isfill;
 	end
@@ -178,8 +184,14 @@ while 1
 		is_reduce_v = ~is_reduce_v;
 		if is_reduce_v
 			time_range = time_range - deg2km(mean(dist_range))./ref_v;
+			for izoom = 1:size(hist_time_range,1)
+				hist_time_range(izoom,:) = hist_time_range(izoom,:) - deg2km(mean(dist_range))./ref_v;
+			end
 		else
 			time_range = time_range + deg2km(mean(dist_range))./ref_v;
+			for izoom = 1:size(hist_time_range,1)
+				hist_time_range(izoom,:) = hist_time_range(izoom,:) + deg2km(mean(dist_range))./ref_v;
+			end
 		end
 	end
 	if bot == 'p'
@@ -225,6 +237,8 @@ while 1
 	end
 	if bot == 'O' % reset
 		zoom_level = 1;
+		hist_time_range(zoom_level,:) = ori_time_range;
+		hist_dist_range(zoom_level,:) = ori_dist_range;
 		time_range = hist_time_range(zoom_level,:);
 		dist_range = hist_dist_range(zoom_level,:);
 		isfill = 0;
