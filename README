@@ -1,0 +1,13 @@
+**Program for the record reading waveform plot
+Written by Ge Jin, ge.jin@ldeo.columbia.edu, jinwar@gmail.com
+March, 2013
+
+Instruction: 
+
+1. Use recread_sac2eventmat.m to convert the SOD downloaded sac files into mat file
+2. load the matfile and then run plot_recread.m
+
+command list can be found in command_list.txt
+
+Enjoy!
+
