@@ -1,7 +1,27 @@
-
-event = '201303102251';
+%% scripts to make plots for recreading
+% written by Ge Jin, jinwar@gmail.com, ge.jin@ldeo
+% 2013-03-29
+%
+%event = '201303102251';
 %load(event)
+stlas = [stadata.stla];
+stlos = [stadata.stlo];
+[dists azi] = distance(evla,evlo,stlas,stlos);
 
+%% Things you may need to change:
+% for event from south
+ind = find(azi>180);
+azi(ind) = azi(ind) - 360;
+dist_range = [min(dists) max(dists)];
+time_range = [0 4000];
+
+% parameters that not need to be changed.
+ori_dist_range = dist_range;
+ori_time_range = time_range;
+azi_range = [min(azi) max(azi)];
+zoom_level = 1;
+hist_time_range(zoom_level,:) = time_range;
+hist_dist_range(zoom_level,:) = dist_range;
 freq_band = 0; 
 comp = 1;
 single_norm = 1;
@@ -12,18 +32,8 @@ isfill = 0;
 is_reduce_v = 0;
 ref_v = 10;
 is_dist = 1;
-
-stlas = [stadata.stla];
-stlos = [stadata.stlo];
-[dists azi] = distance(evla,evlo,stlas,stlos);
-dist_range = [min(dists) max(dists)];
-time_range = [0 2000];
-ori_dist_range = dist_range;
-ori_time_range = time_range;
-azi_range = [min(azi) max(azi)];
-zoom_level = 1;
-hist_time_range(zoom_level,:) = time_range;
-hist_dist_range(zoom_level,:) = dist_range;
+is_cheatsheet = 0;
+is_bin = 1;
 
 figure(89)
 clf
@@ -38,6 +48,28 @@ end
 ind = find(dists>dist_range(1) & dists < dist_range(2));
 stah = plotm(stlas(ind),stlos(ind),'rv');
 
+% Gather phase travel-time information
+phasenum = 0;
+phases = [];
+for n=0:9
+	command = ['traveltime = [stadata.t',num2str(n),'];'];
+	eval(command);
+	command = ['name = {stadata.kt',num2str(n),'};'];
+	eval(command);
+	if nansum(traveltime) > 1
+		phasenum = phasenum+1;
+		phasedata = [dists(:),traveltime(:)];
+		phasedata = sortrows(phasedata,1);
+		phases(phasenum).dists = phasedata(:,1);
+		phases(phasenum).times = phasedata(:,2);
+		for i=1:length(name)
+			if sum(char(name(i))==' ') < length(char(name(i)))
+				phases(phasenum).name = char(name(i));
+				break
+			end
+		end
+	end
+end
 
 
 while 1
@@ -66,6 +98,8 @@ while 1
 		end
 	end
 	norm_amp = nanmedian(max_amp);
+	dist_bin = linspace(dist_range(1),dist_range(2),N_trace);
+	plot_bin = zeros(size(dist_bin));
 	for ista = 1:length(stadata)
 		if dists(ista) < dist_range(1) || dists(ista) > dist_range(2)
 			continue;
@@ -90,6 +124,19 @@ while 1
 			end
 		end
 		if is_dist
+			if is_bin
+				bin_id = round((dists(ista)-dist_bin(1))./(dist_bin(2)-dist_bin(1)));
+				if bin_id == 0
+					bin_id = bin_id+1;
+				end
+				if bin_id > length(plot_bin)
+					bin_id = bin_id-1;
+				end
+				plot_bin(bin_id) = plot_bin(bin_id)+1;
+				if plot_bin(bin_id) > 1
+					continue;
+				end
+			end
 			trace_amp = amp*diff(dist_range)/N_trace;
 			plot(timeaxis,data*trace_amp+dists(ista),'k');
 			if isfill
@@ -105,6 +152,25 @@ while 1
 				data(find(data > 0)) = 0;
 				area(timeaxis,data*trace_amp+azi(ista),azi(ista),'facecolor','r');
 			end
+		end
+	end % end of station loop
+	if is_cheatsheet
+		for ip = 1:length(phases)
+			phasedist = phases(ip).dists;
+			phasetime = phases(ip).times;
+			ind = find(isnan(phasetime));
+			phasetime(ind) = [];
+			phasedist(ind) = [];
+			if is_reduce_v
+				phasetime = phasetime - deg2km(phasedist)./ref_v;
+			end
+			plot(phasetime,phasedist,'r');
+			texty = dist_range(1) + diff(dist_range)*(.3+rand/10-.1);
+			textx = interp1(phasedist,phasetime,texty);
+			text(textx,texty,phases(ip).name,'color','r','fontsize',20,'linewidth',2);
+			texty = dist_range(1) + diff(dist_range)*(.7+rand/10-.1);
+			textx = interp1(phasedist,phasetime,texty);
+			text(textx,texty,phases(ip).name,'color','r','fontsize',20,'linewidth',2);
 		end
 	end
 	if is_dist
@@ -288,6 +354,12 @@ while 1
 	end
 	if bot == '0'
 		freq_band = 0;
+	end
+	if bot == 'c'
+		is_cheatsheet = ~is_cheatsheet;
+	end
+	if bot == 'b'
+		is_bin = ~is_bin;
 	end
 end
 

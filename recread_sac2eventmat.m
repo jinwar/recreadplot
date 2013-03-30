@@ -1,7 +1,7 @@
 clear
 
 
-event = '201303252302';
+event = '201303102251';
 
 delta = 0.5;
 lowfilter = [200 20];
@@ -29,11 +29,18 @@ for ista = 1:length(sacZfiles)
 	filename = dir([event,'/*.',stadata(ista).stnm,'.*BHT.sac']);
 	sacT = readsac(fullfile(event,filename.name));
 	stadata(ista).odataT = interp1(old_timeaxis,sacT.DATA1,new_timeaxis);
+	for n=0:9
+		command = ['stadata(ista).t',num2str(n),' = sacZ.T',num2str(n),';'];
+		eval(command);
+		command = ['stadata(ista).kt',num2str(n),' = sacZ.KT',num2str(n),';'];
+		eval(command);
+	end
 	disp(stadata(ista).stnm)
 end
 
 evla = sacZ.EVLA;
 evlo = sacZ.EVLO;
+evdp = sacZ.EVDP;
 
 % apply filter
 W = 2*delta./lowfilter;

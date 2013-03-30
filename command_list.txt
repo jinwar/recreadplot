@@ -1,10 +1,12 @@
 plot_recread.m Command List:
 
+Nagivation:
 x : Zoom in for time
 y : Zoom in for dist
 o : back one zoom level
 O : reset zoom level and other setting.
 
+Components and filters:
 z : show BHZ component
 r : show BHR component
 t : show BHT component
@@ -13,12 +15,21 @@ m : middle frequency band
 h : high frequency band
 0 : raw data
 
+Velocity Reduction:
 v : turn on or off velocity reduction
 p : pick the slowness of a phase
 i : manually input the horizonal slowness for velocity reduction
 
-/ : show station map within the distance range
+Virtualization:
 f : fill the area above zero
 a + 1-9 : change the amplitude
 n : change between individual normalize or global normalize
 d : change between distance plot and azimuth plot
+b : plot all data or plot bin data (bin data only plots one trace in each bin, not stacking)
+
+Other information:
+/ : show station map within the distance range
+c : bring out phase cheat sheet
+
+System:
+q : quit
