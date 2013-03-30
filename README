@@ -12,7 +12,8 @@ Instruction:
 
 Command list can be found in command_list.txt
 
-TIP: you need to restart your matlab if you plug or unplug a monitor to your computer.
+TIP: You must restart your matlab if you plug or unplug a monitor to your computer.
+TIP: You can use run_taupsetsac.csh to change the phases in the cheat sheet if you have taup in your machine. Run this before you run recread_eventmat.m
 
 Enjoy!
 
