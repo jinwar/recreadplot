@@ -4,10 +4,16 @@ March, 2013
 
 Instruction: 
 
-1. Use recread_sac2eventmat.m to convert the SOD downloaded sac files into mat file
-2. load the matfile and then run plot_recread.m
+* Download the sac files using SOD, with Patty's xml template.
+* Copy all the files to the folder one level above your downloaded sac files
+* Change the eventid in recread_sac2eventmat.m 
+* Run recread_sac2eventmat.m, it will generate a mat file: "eventid".mat
+* Load the matfile and then run plot_recread.m
 
-command list can be found in command_list.txt
+Command list can be found in command_list.txt
+
+TIP: you need to restart your matlab if you plug or unplug a monitor to your computer.
 
 Enjoy!
 
+Jingle
