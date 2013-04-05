@@ -1,12 +1,15 @@
 clear
 
 
-event = '201303102251';
+event = '201303270203';
 
 delta = 0.5;
 lowfilter = [200 20];
 midfilter = [30 5];
 highfilter = [10 2];
+lowfilter = [200 50];
+midfilter = [40 10];
+highfilter = [10 5];
 
 sacZfiles = dir([event,'/*.BHZ.sac']);
 
@@ -40,7 +43,7 @@ end
 
 evla = sacZ.EVLA;
 evlo = sacZ.EVLO;
-evdp = sacZ.EVDP;
+evdp = sacZ.EVDP/1e3;
 
 % apply filter
 W = 2*delta./lowfilter;
@@ -61,4 +64,4 @@ for ista = 1:length(sacZfiles)
 	stadata(ista).high_dataT = filtfilt(highb,higha,stadata(ista).odataT);
 end
 
-save(event,'stadata','evla','evlo');
+save(event,'stadata','evla','evlo','evdp');

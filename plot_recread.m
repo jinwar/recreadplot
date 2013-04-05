@@ -3,7 +3,17 @@
 % 2013-03-29
 %
 %event = '201303102251';
+
 %load(event)
+load phasedb.mat
+cheatsheetphases = {'P','Pdiff','S','Sdiff','SP',...
+					'PP','PPP','SS','SSS','SSSS',...
+					'SSP','PSP',...
+					'SKS','SKKS','SKKKS',...
+					'SKIKKIKS',...
+					'PKIKP','PKKP','PKIKKIKP'}
+
+
 stlas = [stadata.stla];
 stlos = [stadata.stlo];
 [dists azi] = distance(evla,evlo,stlas,stlos);
@@ -50,24 +60,34 @@ stah = plotm(stlas(ind),stlos(ind),'rv');
 
 % Gather phase travel-time information
 phasenum = 0;
-phases = [];
-for n=0:9
-	command = ['traveltime = [stadata.t',num2str(n),'];'];
-	eval(command);
-	command = ['name = {stadata.kt',num2str(n),'};'];
-	eval(command);
-	if nansum(traveltime) > 1
-		phasenum = phasenum+1;
-		phasedata = [dists(:),traveltime(:)];
-		phasedata = sortrows(phasedata,1);
-		phases(phasenum).dists = phasedata(:,1);
-		phases(phasenum).times = phasedata(:,2);
-		for i=1:length(name)
-			if sum(char(name(i))==' ') < length(char(name(i)))
-				phases(phasenum).name = char(name(i));
-				break
-			end
+eventphases = [];
+exist_phase_names = [phases.name];
+
+for ip = 1:length(cheatsheetphases)
+	phasename = cheatsheetphases(ip);
+	if ismember(phasename,exist_phase_names)
+		phaseid = find(ismember(exist_phase_names,phasename));
+		[evdpdiff depthid] = min(abs(phases(phaseid).evdps - evdp));
+		if evdpdiff > 50
+			disp(['No phase ',char(phasename),' for this event depth'])
 		end
+		phasenum = phasenum+1;
+		odist = phases(phaseid).event(depthid).dist;
+		otime = phases(phaseid).event(depthid).time;
+		uni_dist = unique(odist);
+		uni_time = uni_dist;
+		for id = 1:length(uni_dist)
+			uni_time(id) = min(otime(find(odist == uni_dist(id))));
+		end
+
+		eventphases(phasenum).dists = uni_dist;
+		eventphases(phasenum).times = uni_time;
+		eventphases(phasenum).alldists = odist;
+		eventphases(phasenum).alltimes = otime;
+		eventphases(phasenum).name = char(phases(phaseid).name);
+	else
+		disp(['Cannot find travel time information in the phase database for ',char(phasename)]);
+		disp(['Please use make_phasedb to increase the database']);
 	end
 end
 
@@ -141,7 +161,7 @@ while 1
 			plot(timeaxis,data*trace_amp+dists(ista),'k');
 			if isfill
 				data(find(data > 0)) = 0;
-				area(timeaxis,data*trace_amp+dists(ista),dists(ista),'facecolor','r');
+				area(timeaxis,data*trace_amp+dists(ista),dists(ista),'facecolor','b');
 			end
 		else
 			ind = find(dists>dist_range(1) & dists < dist_range(2));
@@ -150,14 +170,14 @@ while 1
 			plot(timeaxis,data*trace_amp+azi(ista),'k');
 			if isfill
 				data(find(data > 0)) = 0;
-				area(timeaxis,data*trace_amp+azi(ista),azi(ista),'facecolor','r');
+				area(timeaxis,data*trace_amp+azi(ista),azi(ista),'facecolor','b');
 			end
 		end
 	end % end of station loop
 	if is_cheatsheet
-		for ip = 1:length(phases)
-			phasedist = phases(ip).dists;
-			phasetime = phases(ip).times;
+		for ip = 1:length(eventphases)
+			phasedist = eventphases(ip).dists;
+			phasetime = eventphases(ip).times;
 			ind = find(isnan(phasetime));
 			phasetime(ind) = [];
 			phasedist(ind) = [];
@@ -165,12 +185,12 @@ while 1
 				phasetime = phasetime - deg2km(phasedist)./ref_v;
 			end
 			plot(phasetime,phasedist,'r');
-			texty = dist_range(1) + diff(dist_range)*(.3+rand/10-.1);
+			texty = dist_range(1) + diff(dist_range)*(.3+rand/5-.2);
 			textx = interp1(phasedist,phasetime,texty);
-			text(textx,texty,phases(ip).name,'color','r','fontsize',20,'linewidth',2);
-			texty = dist_range(1) + diff(dist_range)*(.7+rand/10-.1);
+			text(textx,texty,eventphases(ip).name,'color','r','fontsize',20,'linewidth',2);
+			texty = dist_range(1) + diff(dist_range)*(.7+rand/5);
 			textx = interp1(phasedist,phasetime,texty);
-			text(textx,texty,phases(ip).name,'color','r','fontsize',20,'linewidth',2);
+			text(textx,texty,eventphases(ip).name,'color','r','fontsize',20,'linewidth',2);
 		end
 	end
 	if is_dist
