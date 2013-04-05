@@ -4,12 +4,12 @@ clear
 event = '201303270203';
 
 delta = 0.5;
-lowfilter = [200 20];
-midfilter = [30 5];
-highfilter = [10 2];
-lowfilter = [200 50];
+%lowfilter = [200 20];
+%midfilter = [30 5];
+%highfilter = [10 2];
+lowfilter = [200 30];
 midfilter = [40 10];
-highfilter = [10 5];
+highfilter = [10 2];
 
 sacZfiles = dir([event,'/*.BHZ.sac']);
 
