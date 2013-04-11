@@ -7,14 +7,17 @@
 %load(event)
 load phasedb.mat
 cheatsheetphases = {'P','Pdiff','S','Sdiff','SP',...
-					'PP','PPP','SS','SSS','SSSS',...
+					'PP','PPP','PPPP','SS','SSS','SSSS',...
 					'SSP','PSP',...
 					'SKS','SKKS','SKKKS',...
 					'SKIKKIKS',...
 					'ScSScS',...
-					'pP','pS','sS','sP'...
-					'PKIKP','PKKP','PKIKKIKP'}
+					'PKIKP','PKKP','PKIKKIKP'...
+	}
 
+if evdp > 50
+	cheatsheetphases = [cheatsheetphases, {'pP','pS','sS','sP'}]
+end
 
 stlas = [stadata.stla];
 stlos = [stadata.stlo];
@@ -50,15 +53,17 @@ is_bin = 1;
 figure(89)
 clf
 ax = usamap('conus');
-states = shaperead('usastatelo', 'UseGeoCoords', true);
+load states.mat
 geoshow(ax, states, 'FaceColor', [0.5 0.5 1])
+ind = find(dists>dist_range(1) & dists < dist_range(2));
+stah = plotm(stlas(ind),stlos(ind),'rv');
 circleRs = floor(dist_range(1)/10)*10:10:ceil(dist_range(2)/10)*10;
 for i=1:length(circleRs)
 	[lats lons] = scircle1(evla,evlo,circleRs(i));
 	geoshow(lats,lons,'color','k');
+	ind = find(lats > 25 & lats < 50 & lons > -125 & lons < -60);
+	textm(mean(lats(ind)),mean(lons(ind)),num2str(circleRs(i)),'fontsize',20);
 end
-ind = find(dists>dist_range(1) & dists < dist_range(2));
-stah = plotm(stlas(ind),stlos(ind),'rv');
 
 % Gather phase travel-time information
 phasenum = 0;
