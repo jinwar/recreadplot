@@ -4,8 +4,8 @@ March, 2013
 
 Instruction: 
 
-* Download the sac files using SOD, with Patty's xml template.
-* Copy all the files to the folder one level above your downloaded sac files
+* On povel, change earthquake informaiton in sod.xml, Run: nohup sod -f sod.xml > log &
+* Copy the folder with sac files into your laptop, copy everything of this program to the same folder (one level above sac files)
 * Change the eventid in recread_sac2eventmat.m, modify the filters if necessary
 * Run recread_sac2eventmat.m, it will generate a mat file: "eventid".mat
 * Modify the phases you want to have in the cheatsheet in plot_recread.m. If the phase you interested is not in the database, use make_phasedb.m to add it.
@@ -14,7 +14,6 @@ Instruction:
 Command list can be found in command_list.txt
 
 TIP: You must restart your matlab if you plug or unplug a monitor to your computer.
-TIP: You can use run_taupsetsac.csh to change the phases in the cheat sheet if you have taup in your machine. Run this before you run recread_eventmat.m
 
 Enjoy!
 
