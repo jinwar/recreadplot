@@ -26,6 +26,7 @@ a + 1-9 : change the amplitude
 n : change between individual normalize or global normalize
 d : change between distance plot and azimuth plot
 b : plot all data or plot bin data (bin data only plots one trace in each bin, not stacking)
+. : adding a marker or delete the existing one.
 
 Other information:
 / : show station map within the distance range
