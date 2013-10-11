@@ -321,7 +321,10 @@ while 1
 		[x2 y2] = ginput(1);
 	end
 	if bot == 'x'  % changing time range
+		plot([x x],dist_range,'r','linewidth',2);
 		[x2 y2] = ginput(1);
+		plot([x2 x2],dist_range,'r','linewidth',2);
+		pause(0.5);
 		if x2 > x
 			time_range = [x x2];
 		else
@@ -332,7 +335,10 @@ while 1
 		hist_dist_range(zoom_level,:) = dist_range;
 	end
 	if bot == 'y' % change distance range
+		plot(time_range,[y y],'r','linewidth',2);
 		[x2 y2] = ginput(1);
+		plot(time_range,[y2 y2],'r','linewidth',2);
+		pause(0.5)
 		if y2 > y
 			dist_range = [y y2];
 		else
