@@ -51,6 +51,7 @@ ref_v = 10;
 is_dist = 1;
 is_cheatsheet = 0;
 is_bin = 1;
+is_mark = 0;
 
 figure(89)
 clf
@@ -172,6 +173,9 @@ while 1
 				data(find(data > 0)) = 0;
 				area(timeaxis,data*trace_amp+dists(ista),dists(ista),'facecolor','b');
 			end
+			if is_mark
+				plot(markertime,markerdist,'m','linewidth',2);
+			end
 		else
 			ind = find(dists>dist_range(1) & dists < dist_range(2));
 			azi_range = [min(azi(ind)) max(azi(ind))];
@@ -264,6 +268,16 @@ while 1
 	if bot == 'd'
 		is_dist = ~is_dist;
 	end
+	if bot == '.'
+		if is_mark
+			is_mark = 0;
+		else
+			is_mark = 1;
+			[x2 y2] = ginput(1);
+			markertime = [x x2];
+			markerdist = [y y2];
+		end
+	end
 	if bot == 'a'
 		[x2 y2 ampstr] = ginput(1);
 		temp = ampstr - '0';
@@ -294,10 +308,16 @@ while 1
 			for izoom = 1:size(hist_time_range,1)
 				hist_time_range(izoom,:) = hist_time_range(izoom,:) - deg2km(mean(dist_range))./ref_v;
 			end
+			if is_mark
+				markertime = markertime - deg2km(markerdist)./ref_v;
+			end
 		else
 			time_range = time_range + deg2km(mean(dist_range))./ref_v;
 			for izoom = 1:size(hist_time_range,1)
 				hist_time_range(izoom,:) = hist_time_range(izoom,:) + deg2km(mean(dist_range))./ref_v;
+			end
+			if is_mark
+				markertime = markertime + deg2km(markerdist)./ref_v;
 			end
 		end
 	end
