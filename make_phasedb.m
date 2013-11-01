@@ -7,7 +7,8 @@ clear;
 %phasenames = {'SSP','PPSS'}
 %phasenames = {'pP','pS','sP','sS'};
 %phasenames = {'PKiKP'}
-phasenames = {'PcP','ScS','ScSScS'}
+%phasenames = {'PcP','ScS','ScSScS'}
+phasenames = {'PKP','PKPPKP'}
 
 if exist('phasedb.mat','file')
 	load phasedb.mat
