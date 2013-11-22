@@ -1,7 +1,7 @@
 clear
 
 
-event = '201305140032';
+event = '201311160334';
 
 delta = 0.5;
 %lowfilter = [200 20];
@@ -11,7 +11,7 @@ lowfilter = [200 30];
 midfilter = [40 10];
 highfilter = [10 2];
 
-sacZfiles = dir([event,'/*.BHZ.sac']);
+sacZfiles = dir([event,'/*TA*.LHZ.sac']);
 
 % read in the data
 for ista = 1:length(sacZfiles)
@@ -26,10 +26,10 @@ for ista = 1:length(sacZfiles)
 	new_timeaxis = old_timeaxis(1):delta:old_timeaxis(end);
 	stadata(ista).timeaxis = new_timeaxis;
 	stadata(ista).odataZ = interp1(old_timeaxis,sacZ.DATA1,new_timeaxis);
-	filename = dir([event,'/*.',stadata(ista).stnm,'.*BHR.sac']);
+	filename = dir([event,'/*.',stadata(ista).stnm,'.*LHR.sac']);
 	sacR = readsac(fullfile(event,filename.name));
 	stadata(ista).odataR = interp1(old_timeaxis,sacR.DATA1,new_timeaxis);
-	filename = dir([event,'/*.',stadata(ista).stnm,'.*BHT.sac']);
+	filename = dir([event,'/*.',stadata(ista).stnm,'.*LHT.sac']);
 	sacT = readsac(fullfile(event,filename.name));
 	stadata(ista).odataT = interp1(old_timeaxis,sacT.DATA1,new_timeaxis);
 	for n=0:9

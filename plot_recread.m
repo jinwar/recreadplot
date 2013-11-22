@@ -7,14 +7,14 @@
 %load(event)
 load phasedb.mat
 cheatsheetphases = {'P','Pdiff','S','Sdiff','SP',...
-					'PP','PPP','PPPP','SS','SSS','SSSS',...
+					'PP','PPP','SS','SSS',...
 					'SSP','PSP',...
 					'SKS','SKKS','SKKKS',...
-					'SKIKKIKS',...
 					'ScSScS',...
 					'ScS','PcP',...
 					'PKIKP','PKKP','PKIKKIKP'...
-					'PKP','PKPPKP'...
+					'PKP','PKPPKP',...
+					'PKIKP'...
 	}
 
 if evdp > 50
@@ -32,7 +32,7 @@ if mean(azi) < 90 || mean(azi) > 270
 	azi(ind) = azi(ind) - 360;
 end
 dist_range = [min(dists) max(dists)];
-time_range = [0 4000];
+time_range = [500 6000];
 
 % parameters that not need to be changed.
 ori_dist_range = dist_range;
@@ -45,7 +45,7 @@ freq_band = 0;
 comp = 1;
 single_norm = 1;
 amp = 5;
-N_trace = 250;
+N_trace = 200;
 norm_amp = 1;
 isfill = 0;
 is_reduce_v = 0;
@@ -54,6 +54,7 @@ is_dist = 1;
 is_cheatsheet = 0;
 is_bin = 1;
 is_mark = 0;
+amp_diff_tol = 5;
 
 figure(89)
 clf
@@ -68,6 +69,57 @@ for i=1:length(circleRs)
 	geoshow(lats,lons,'color','k');
 	ind = find(lats > 25 & lats < 50 & lons > -125 & lons < -60);
 	textm(mean(lats(ind)),mean(lons(ind)),num2str(circleRs(i)),'fontsize',20);
+end
+circleRs = floor(azi_range(1)/10)*10:10:ceil(azi_range(2)/10)*10;
+rnd = [0:5:180];
+for i=1:length(circleRs)
+	[lats lons] = reckon(evla,evlo,rnd,circleRs(i));
+	geoshow(lats,lons,'color','b');
+	ind = find(lats > 25 & lats < 50 & lons > -125 & lons < -60);
+	textm(mean(lats(ind)),mean(lons(ind)),num2str(circleRs(i)),'fontsize',15);
+end
+
+figure(90)
+clf
+ax = usamap('alaska');
+geoshow(ax, states, 'FaceColor', [0.5 0.5 1])
+plotm(stlas,stlos,'rv');
+circleRs = floor(dist_range(1)/10)*10:10:ceil(dist_range(2)/10)*10;
+for i=1:length(circleRs)
+	[lats lons] = scircle1(evla,evlo,circleRs(i));
+	geoshow(lats,lons,'color','k');
+	ind = find(lats > 50 & lats < 70 & lons > -180 & lons < -130);
+	textm(mean(lats(ind)),mean(lons(ind)),num2str(circleRs(i)),'fontsize',20);
+end
+circleRs = floor(azi_range(1)/10)*10:10:ceil(azi_range(2)/10)*10;
+rnd = [0:5:180];
+for i=1:length(circleRs)
+	[lats lons] = reckon(evla,evlo,rnd,circleRs(i));
+	geoshow(lats,lons,'color','b');
+	ind = find(lats > 50 & lats < 70 & lons > -180 & lons < -130);
+	textm(mean(lats(ind)),mean(lons(ind)),num2str(circleRs(i)),'fontsize',15);
+end
+
+figure(91)
+clf
+ax = worldmap([-90 90],[-145 -35]);
+load coast
+plotm(lat, long)
+plotm(stlas,stlos,'rv');
+circleRs = floor(dist_range(1)/10)*10:10:ceil(dist_range(2)/10)*10;
+for i=1:length(circleRs)
+	[lats lons] = scircle1(evla,evlo,circleRs(i));
+	geoshow(lats,lons,'color','k');
+	ind = find(lats > 50 & lats < 70 & lons > -180 & lons < -130);
+	textm(mean(lats(ind)),mean(lons(ind)),num2str(circleRs(i)),'fontsize',20);
+end
+circleRs = floor(azi_range(1)/10)*10:10:ceil(azi_range(2)/10)*10;
+rnd = [0:5:180];
+for i=1:length(circleRs)
+	[lats lons] = reckon(evla,evlo,rnd,circleRs(i));
+	geoshow(lats,lons,'color','b');
+	ind = find(lats > 50 & lats < 70 & lons > -180 & lons < -130);
+	textm(mean(lats(ind)),mean(lons(ind)),num2str(circleRs(i)),'fontsize',15);
 end
 
 % Gather phase travel-time information
@@ -115,6 +167,7 @@ while 1
 	for ista = 1:length(stadata)
 		if dists(ista) < dist_range(1) || dists(ista) > dist_range(2)
 			max_amp(ista) = NaN;
+			continue;
 		end
 		timeaxis = stadata(ista).timeaxis;
 		if is_reduce_v
@@ -132,6 +185,10 @@ while 1
 	norm_amp = nanmedian(max_amp);
 	dist_bin = linspace(dist_range(1),dist_range(2),N_trace);
 	plot_bin = zeros(size(dist_bin));
+	ind = find(dists>dist_range(1) & dists < dist_range(2));
+	azi_range = [min(azi(ind)) max(azi(ind))];
+	azi_bin = linspace(azi_range(1),azi_range(2),N_trace);
+	
 	for ista = 1:length(stadata)
 		if dists(ista) < dist_range(1) || dists(ista) > dist_range(2)
 			continue;
@@ -151,7 +208,7 @@ while 1
 			data = data./max(abs(data));
 		else
 			data = data./norm_amp;
-			if max(abs(data)) > 5
+			if max(abs(data)) > amp_diff_tol
 				data(:) = 0;
 			end
 		end
@@ -179,8 +236,16 @@ while 1
 				plot(markertime,markerdist,'m','linewidth',2);
 			end
 		else
-			ind = find(dists>dist_range(1) & dists < dist_range(2));
-			azi_range = [min(azi(ind)) max(azi(ind))];
+			if is_bin
+				bin_id = round((azi(ista)-azi_bin(1))./(azi_bin(2)-azi_bin(1)));
+				if bin_id < 1 || bin_id > length(plot_bin)
+					continue;
+				end
+				plot_bin(bin_id) = plot_bin(bin_id)+1;
+				if plot_bin(bin_id) > 1
+					continue;
+				end
+			end
 			trace_amp = amp*diff(azi_range)/N_trace;
 			plot(timeaxis,data*trace_amp+azi(ista),'k');
 			if isfill
@@ -239,7 +304,7 @@ while 1
 		refvstr = 'None';
 		raypstr = 'None';
 	end
-	title(['Comp: ',comp_name,' Band: ',band_name, ' Vel: ',refvstr, ' rayP: ', raypstr],'fontsize',15);
+	title(['Comp: ',comp_name,' Band: ',band_name, ' Vel: ',refvstr, ' rayP: ', raypstr,' ampnorm: ',num2str(single_norm)],'fontsize',15);
 	xlabel('Time /s','fontsize',15)
 	if is_dist
 		ylabel('Distance /degree','fontsize',15)
@@ -263,6 +328,21 @@ while 1
 		end
 		ind = find(dists>dist_range(1) & dists < dist_range(2));
 		stah = plotm(stlas(ind),stlos(ind),'rv');	
+	end
+	if bot == 's'
+		[temp staid] = min(abs(dists-y));
+		timeaxis = stadata(staid).timeaxis;
+		if is_reduce_v
+			timeaxis = timeaxis - deg2km(dists(staid))./ref_v;
+		end
+		ind = find(timeaxis > time_range(1) & timeaxis < time_range(2));
+		if isempty(ind)
+			continue;
+		end
+		timeaxis = timeaxis(ind);
+		data = choose_data(stadata(staid),comp,freq_band);
+		data = data(ind);
+		mk_sound(data,timeaxis(2) - timeaxis(1));
 	end
 	if bot == 'f'
 		isfill = ~isfill;
