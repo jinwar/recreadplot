@@ -2,10 +2,21 @@
 % written by Ge Jin, jinwar@gmail.com, ge.jin@ldeo
 % 2013-03-29
 %
-%event = '201303102251';
+%event_name = '201303102251';
 
 %load(event)
 load phasedb.mat
+
+if exist('fetchdata.mat','file')
+	load fetchdata.mat
+	event_Otime = datenum(event_info.PreferredTime,'yyyy-mm-dd HH:MM:SS.FFF');
+	event_name = datestr(event_Otime,'yyyymmddHHMM');
+end
+
+if ~exist('stadata','var')
+	load(event_name);
+end
+
 cheatsheetphases = {'P','Pdiff','S','Sdiff','SP',...
 					'PP','PPP','SS','SSS',...
 					'SSP','PSP',...
@@ -32,7 +43,7 @@ if mean(azi) < 90 || mean(azi) > 270
 	azi(ind) = azi(ind) - 360;
 end
 dist_range = [min(dists) max(dists)];
-time_range = [500 6000];
+time_range = [-600 6000];
 
 % parameters that not need to be changed.
 ori_dist_range = dist_range;
@@ -328,9 +339,28 @@ while 1
 		end
 		ind = find(dists>dist_range(1) & dists < dist_range(2));
 		stah = plotm(stlas(ind),stlos(ind),'rv');	
+		pause
 	end
 	if bot == 's'
 		[temp staid] = min(abs(dists-y));
+		timeaxis = stadata(staid).timeaxis;
+		if is_reduce_v
+			timeaxis = timeaxis - deg2km(dists(staid))./ref_v;
+		end
+		ind = find(timeaxis > time_range(1) & timeaxis < time_range(2));
+		if isempty(ind)
+			continue;
+		end
+		timeaxis = timeaxis(ind);
+		data = choose_data(stadata(staid),comp,freq_band);
+		data = data(ind);
+		mk_sound(data,timeaxis(2) - timeaxis(1));
+	end
+	if bot == 'S'
+		figure(89)
+		[plat plon] = inputm(1);
+		sta_dists = distance(plat,plon,stlas,stlos);
+		[temp staid] = min(sta_dists);
 		timeaxis = stadata(staid).timeaxis;
 		if is_reduce_v
 			timeaxis = timeaxis - deg2km(dists(staid))./ref_v;
