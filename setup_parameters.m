@@ -7,7 +7,8 @@ start_time = '2014-02-24 00:00:00';
 search_time_range = 24;  % in hour
 
 % station parameters
-station_network = '_GSN';
+%station_network = '_GSN';
+station_network = 'TA';
 
 % define donwload waveform length
 align_phase = 'P';   % O for original time, P for P phase
@@ -19,6 +20,9 @@ min_after = 60; %  minutes after the phase
 lowfilter = [200 30];
 midfilter = [40 10];
 highfilter = [2 0.25];
-
 resample_delta = 0.1;
+
+% Waveform plotting parameters
+time_range = [-600 6000];
+N_trace = 100;
 

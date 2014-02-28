@@ -6,6 +6,7 @@
 
 %load(event)
 load phasedb.mat
+setup_parameters
 
 if exist('fetchdata.mat','file')
 	load fetchdata.mat
@@ -43,7 +44,6 @@ if mean(azi) < 90 || mean(azi) > 270
 	azi(ind) = azi(ind) - 360;
 end
 dist_range = [min(dists) max(dists)];
-time_range = [-600 6000];
 
 % parameters that not need to be changed.
 ori_dist_range = dist_range;
@@ -56,7 +56,6 @@ freq_band = 0;
 comp = 1;
 single_norm = 1;
 amp = 5;
-N_trace = 200;
 norm_amp = 1;
 isfill = 0;
 is_reduce_v = 0;
@@ -237,7 +236,7 @@ while 1
 					continue;
 				end
 			end
-			trace_amp = amp*diff(dist_range)/N_trace;
+			trace_amp = amp*diff(dist_range)/(2*N_trace);
 			plot(timeaxis,data*trace_amp+dists(ista),'k');
 			if isfill
 				data(find(data > 0)) = 0;
@@ -257,7 +256,7 @@ while 1
 					continue;
 				end
 			end
-			trace_amp = amp*diff(azi_range)/N_trace;
+			trace_amp = amp*diff(azi_range)/(2*N_trace);
 			plot(timeaxis,data*trace_amp+azi(ista),'k');
 			if isfill
 				data(find(data > 0)) = 0;
