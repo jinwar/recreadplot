@@ -1,14 +1,14 @@
 
 % event parameters
-lat_range = [3.5 5];
+lat_range = [3.5 6];
 lon_range = [62 63];
 mag_range = [4 6];
 start_time = '2014-02-24 00:00:00';
 search_time_range = 24;  % in hour
 
 % station parameters
-%station_network = '_GSN';
-station_network = 'TA';
+station_network = '_GSN';
+%station_network = 'TA';
 
 % define donwload waveform length
 align_phase = 'P';   % O for original time, P for P phase
