@@ -1,15 +1,18 @@
-#Program for the record reading waveform plot
-##Written by Ge Jin, ge.jin@ldeo.columbia.edu, jinwar@gmail.com
-March, 2013
+## Program for the record reading waveform plot
+Written by Ge Jin, ge.jin@ldeo.columbia.edu, jinwar@gmail.com
 
-#Instruction: 
+### Instruction: 
 
-* On povel, change earthquake informaiton in sod.xml, Run: nohup sod -f sod.xml > log &
-* Copy the folder with sac files into your laptop, copy everything of this program to the same folder (one level above sac files)
-* Change the eventid in recread_sac2eventmat.m, modify the filters if necessary
-* Run recread_sac2eventmat.m, it will generate a mat file: "eventid".mat
-* Modify the phases you want to have in the cheatsheet in plot_recread.m. If the phase you interested is not in the database, use make_phasedb.m to add it.
-* Load the matfile and then run plot_recread.m
+* Edit setup_parameters.m to setup parameters.
+** Change event parameters to search the earthquake.
+** Change station parameters to define the network to be downloaded
+** define the download window
+** define filters
+** define the original (unzoomed) window to be plotted
+* run fetch_event.m, click on the event you want to download, and confirm and type 'y'. The station map will be plotted in this step. It will save "fetchdata.mat" for event and station informations.
+* run download_data.m. rerun it if anything goes wrong in the process of downloading. It will skip the already downloaded stations. 
+* run prepare_data.m. This script will do the instrument response removal, horizontal component rotation, and the filters defined in the parameter file. If you change the filter setting, you need to rerun this step to make it effective. It will save a data file named: "YYYYMMDDhhmm.mat"
+* run plot_recread.m and play with it.
 
 Command list can be found in command_list.txt
 

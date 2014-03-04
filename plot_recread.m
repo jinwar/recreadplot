@@ -7,6 +7,7 @@
 %load(event)
 load phasedb.mat
 setup_parameters
+N_trace = 100;
 
 if exist('fetchdata.mat','file')
 	load fetchdata.mat
