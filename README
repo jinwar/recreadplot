@@ -1,8 +1,8 @@
-**Program for the record reading waveform plot
-Written by Ge Jin, ge.jin@ldeo.columbia.edu, jinwar@gmail.com
+#Program for the record reading waveform plot
+##Written by Ge Jin, ge.jin@ldeo.columbia.edu, jinwar@gmail.com
 March, 2013
 
-Instruction: 
+#Instruction: 
 
 * On povel, change earthquake informaiton in sod.xml, Run: nohup sod -f sod.xml > log &
 * Copy the folder with sac files into your laptop, copy everything of this program to the same folder (one level above sac files)
