@@ -57,6 +57,7 @@ end
 
 
 % apply filter
+delta = resample_delta;
 W = 2*delta./lowfilter;
 [lowb lowa] = butter(2,W);
 W = 2*delta./midfilter;
