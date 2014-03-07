@@ -8,6 +8,7 @@ npoles=5;
 
 data = intrace.data;
 data = detrend(data);
+data = flat_hanning_win(1:length(data),data,1,length(data),50);
 
 T = (intrace.endTime - intrace.startTime)*24*3600;
 N = intrace.sampleCount;
