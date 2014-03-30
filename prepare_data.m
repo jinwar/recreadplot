@@ -14,6 +14,25 @@ sta_mat_files = dir([event_name,'/*.mat']);
 for ista = 1:length(sta_mat_files)
 	sta = load(fullfile(event_name,sta_mat_files(ista).name));
 	ind = find(ismember({sta.traces.channel},{'BHZ'}));
+	if isempty(ind)
+		delete(fullfile(event_name,sta_mat_files(ista).name));
+		continue;
+	end
+	ind = find(ismember({sta.traces.channel},{'BHN','BH1'}));
+	if isempty(ind)
+		delete(fullfile(event_name,sta_mat_files(ista).name));
+		continue;
+	end
+	ind = find(ismember({sta.traces.channel},{'BHE','BH2'}));
+	if isempty(ind)
+		delete(fullfile(event_name,sta_mat_files(ista).name));
+		continue;
+	end
+end
+
+for ista = 1:length(sta_mat_files)
+	sta = load(fullfile(event_name,sta_mat_files(ista).name));
+	ind = find(ismember({sta.traces.channel},{'BHZ'}));
 	bhz = sta.traces(ind);
 	ind = find(ismember({sta.traces.channel},{'BHN','BH1'}));
 	bhn = sta.traces(ind);
