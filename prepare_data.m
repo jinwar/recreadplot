@@ -30,6 +30,8 @@ for ista = 1:length(sta_mat_files)
 	end
 end
 
+sta_mat_files = dir([event_name,'/*.mat']);
+
 for ista = 1:length(sta_mat_files)
 	sta = load(fullfile(event_name,sta_mat_files(ista).name));
 	ind = find(ismember({sta.traces.channel},{'BHZ'}));
