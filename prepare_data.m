@@ -64,8 +64,8 @@ for ista = 1:length(sta_mat_files)
 	baz = azimuth(stla,stlo,evla,evlo);
 	R_az = baz+180;
 	T_az = R_az+90;
-	dataR = dataN*cosd(R_az-bhz.azimuth)+dataE*cosd(R_az-bhe.azimuth);
-	dataT = dataN*cosd(T_az-bhz.azimuth)+dataE*cosd(T_az-bhe.azimuth);
+	dataR = dataN*cosd(R_az-bhn.azimuth)+dataE*cosd(R_az-bhe.azimuth);
+	dataT = dataN*cosd(T_az-bhn.azimuth)+dataE*cosd(T_az-bhe.azimuth);
 	% build up structure
 	stadata(ista).stla = stla;
 	stadata(ista).stlo = stlo;
