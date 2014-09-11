@@ -3,7 +3,7 @@ function outtrace = rm_resp(intrace)
 % written by Ge Jin, 2014/02/27
 intrace = intrace(1);
 isfigure = 0;
-lo_corner = 0.001;  % in Hz
+lo_corner = 0.005;  % in Hz
 npoles=5; 
 
 data = intrace.data;

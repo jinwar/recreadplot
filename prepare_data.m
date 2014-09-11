@@ -51,14 +51,17 @@ for ista = 1:length(sta_mat_files)
 	delta = 1./bhz.sampleRate;
 	old_timeaxis = b:delta:b + delta*(bhz.sampleCount-1);
 	new_timeaxis = old_timeaxis(1):resample_delta:old_timeaxis(end);
+	bhz.data_cor = anti_alias_filter(bhz.data_cor,delta,resample_delta);
 	dataZ = interp1(old_timeaxis,bhz.data_cor,new_timeaxis);
 	b = (bhn.startTime - event_Otime)*24*3600;
 	delta = 1./bhn.sampleRate;
 	old_timeaxis = b:delta:b + delta*(bhn.sampleCount-1);
+	bhn.data_cor = anti_alias_filter(bhn.data_cor,delta,resample_delta);
 	dataN = interp1(old_timeaxis,bhn.data_cor,new_timeaxis);
 	b = (bhe.startTime - event_Otime)*24*3600;
 	delta = 1./bhe.sampleRate;
 	old_timeaxis = b:delta:b + delta*(bhe.sampleCount-1);
+	bhe.data_cor = anti_alias_filter(bhe.data_cor,delta,resample_delta);
 	dataE = interp1(old_timeaxis,bhe.data_cor,new_timeaxis);
 	% rotate
 	baz = azimuth(stla,stlo,evla,evlo);

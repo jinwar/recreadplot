@@ -94,7 +94,7 @@ figure(90)
 clf
 ax = usamap('alaska');
 geoshow(ax, states, 'FaceColor', [0.5 0.5 1])
-plotm(stlas,stlos,'rv');
+stah1 = plotm(stlas,stlos,'rv');
 circleRs = floor(dist_range(1)/10)*10:10:ceil(dist_range(2)/10)*10;
 for i=1:length(circleRs)
 	[lats lons] = scircle1(evla,evlo,circleRs(i));
@@ -116,7 +116,7 @@ clf
 ax = worldmap([-90 90],[-145 -35]);
 load coast
 plotm(lat, long)
-plotm(stlas,stlos,'rv');
+stah2 = plotm(stlas,stlos,'rv');
 circleRs = floor(dist_range(1)/10)*10:10:ceil(dist_range(2)/10)*10;
 for i=1:length(circleRs)
 	[lats lons] = scircle1(evla,evlo,circleRs(i));
@@ -197,13 +197,16 @@ while 1
 	dist_bin = linspace(dist_range(1),dist_range(2),N_trace);
 	plot_bin = zeros(size(dist_bin));
 	ind = find(dists>dist_range(1) & dists < dist_range(2));
-	azi_range = [min(azi(ind)) max(azi(ind))];
+%	azi_range = [min(azi(ind)) max(azi(ind))];
 	azi_bin = linspace(azi_range(1),azi_range(2),N_trace);
 	
 	for ista = 1:length(stadata)
 		if dists(ista) < dist_range(1) || dists(ista) > dist_range(2)
 			continue;
 		end
+		[azi_isin azi(ista)] = is_in_azirange(azi(ista),azi_range);
+		is_in_azi(ista) = azi_isin;
+		if ~azi_isin continue; end
 		timeaxis = stadata(ista).timeaxis;
 		if is_reduce_v
 			timeaxis = timeaxis - deg2km(dists(ista))./ref_v;
@@ -337,9 +340,20 @@ while 1
 			delete(stah)
 			clear stah
 		end
-		ind = find(dists>dist_range(1) & dists < dist_range(2));
+		ind = find(dists>dist_range(1) & dists < dist_range(2) & is_in_azi);
 		stah = plotm(stlas(ind),stlos(ind),'rv');	
-		pause
+		figure(90)
+		if exist('stah','var')
+			delete(stah1)
+			clear stah1
+		end
+		stah1 = plotm(stlas(ind),stlos(ind),'rv');	
+		figure(91)
+		if exist('stah','var')
+			delete(stah2)
+			clear stah2
+		end
+		stah2 = plotm(stlas(ind),stlos(ind),'rv');	
 	end
 	if bot == 's'
 		[temp staid] = min(abs(dists-y));
@@ -397,6 +411,19 @@ while 1
 			amp = temp;
 		end
 	end
+	if bot == 'e'
+		disp(sprintf('Current azimuth range: %f %f',azi_range(1),azi_range(2)));
+		try
+			stemp = input('Input azimuth range:','s');
+			[azi_range(1) azi_range(2)] = strread(stemp,'%f %f');
+		catch e
+			disp('Input error');
+		end
+		if azi_range(1) > azi_range(2)
+			azi_range(1) = azi_range(1)-360;
+		end
+	end
+
 	if bot == 'i'
 		rayp = input('Reduce slowness(s/deg):');
 		new_ref_v = deg2km(1/rayp);
@@ -494,6 +521,7 @@ while 1
 		hist_dist_range(zoom_level,:) = ori_dist_range;
 		time_range = hist_time_range(zoom_level,:);
 		dist_range = hist_dist_range(zoom_level,:);
+		azi_range = [0 360];
 		isfill = 0;
 		is_reduce_v = 0;
 		single_norm = 1;

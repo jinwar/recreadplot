@@ -41,15 +41,17 @@ if com == 'n'
 end
 
 event_info = events_info(eventid);
+
 % getting station information
 %
 disp(['Fetching the station information']);
 disp(['Station Network Required: ', station_network]);
 
-stations_info = irisFetch.Stations('channel',station_network,'*','*','BHZ',...
-					'startTime',start_time,'endTime',end_time);
+stations_info = irisFetch.Stations('channel',station_network,'*','*','BHZ','startTime',start_time,'endTime',end_time,'radialcoordinates',[evlas(eventid),evlos(eventid), max_epi_dist,min_epi_dist]);
 stlas = [stations_info.Latitude];
 stlos = [stations_info.Longitude];
+disp('Save event and stations information into fetchdata.mat');
+
 figure(19)
 clf
 worldmap world
@@ -59,6 +61,6 @@ plotm(stlas,stlos,'bv');
 plotm(evlas(eventid),evlos(eventid),'rp','markersize',20,'markerfacecolor','r')
 drawnow
 
-disp('Save event and stations information into fetchdata.mat');
+
 save fetchdata.mat stations_info event_info
 
