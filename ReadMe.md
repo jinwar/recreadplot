@@ -5,7 +5,7 @@ Written by Ge Jin, ge.jin@ldeo.columbia.edu, jinwar@gmail.com
 
 * Edit setup_parameters.m to setup parameters.
 	- Change event parameters to search the earthquake.
-	- Change station parameters to define the network to be downloaded
+	- Change station parameters to define the network and epicenter distance range to be downloaded
 	- define the download window
 	- define filters
 	- define the original (unzoomed) window to be plotted

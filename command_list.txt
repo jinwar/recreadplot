@@ -25,6 +25,7 @@ f : fill the area above zero
 a + 1-9 : change the amplitude
 n : change between individual normalize or global normalize
 d : change between distance plot and azimuth plot
+e : change azimuth range (type in)
 b : plot all data or plot bin data (bin data only plots one trace in each bin, not stacking)
 . : adding a marker or delete the existing one.
 
