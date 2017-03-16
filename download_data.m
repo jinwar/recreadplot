@@ -18,8 +18,7 @@ event_name = datestr(event_Otime,'yyyymmddHHMM');
 
 if ~exist(event_name,'dir') mkdir(event_name); end
 
-%% breq_fast, email request. FAST & in bulk
-label = ['recread',event_name];
+%% set up arrays for request 
 
 stas = {stations_info.StationCode}';
 nwks = {stations_info.NetworkCode}';
@@ -50,50 +49,52 @@ end
 
 
 %% breq_fast, email request. FAST & in bulk
-label = ['recread',event_name];
-email_matlab_setup;
-% ========================= DATA REQUESTED HERE ===========================
-% breq_fast_request(label,'recreader',stas,'BH?',nwks,'*',waveform_bgtime,waveform_edtime,'SEED',[event_name,'_BREQFAST_REQUEST'])
-
-% ======================= DATA PROCESSED FROM HERE ========================
-% ============= PROCEED FROM THIS POINT WHEN DATA IS READY ================
-
-tr = breq_fast_process(label,'recreader',stas,'BH?',nwks,'*',waveform_bgtime);
-for is = 1:length(stations_info)
-    fprintf('Saving %s data \n',filenames{is})
-    traces = tr(is,:);
-    traces = traces(~cellfun('isempty',{traces.network})); traces = traces(:);
-    save(filenames{is},'traces');
+if strcmp(req_opt,'breqfast')
+    label = ['recread',event_name];
+    req_file = [event_name,'/',event_name,'_BREQFAST_REQUEST'];
+    email_matlab_setup;
+    % ========================= DATA REQUESTED HERE ===========================
+    if exist(req_file,'file')==2 % some chicanery to avoid sending two requests
+        yn = input('Already requested - request again? (y/n) ','s');
+    else
+        yn = 'y';
+    end
+    if strcmp(yn,'y')
+        breq_fast_request(label,'recreader',stas,'BH?',nwks,'*',waveform_bgtime,waveform_edtime,'SEED',req_file)
+        fprintf('\n ============  REQUEST SENT  ============\n')
+        fprintf('Pausing for 10 mins to allow DMC processing.\nUse  CTRL+C to stop\n') 
+        pause(600)
+    end
+    % ======================= DATA PROCESSED FROM HERE ========================
+    % ============= PROCEED FROM THIS POINT WHEN DATA IS READY ================
+    fprintf('\n ============  DOWNLOADING DATA  ============\n')
+    tr = breq_fast_process(label,'recreader',stas,'BH?',nwks,'*',waveform_bgtime);
+    
+    for is = 1:length(stations_info)
+        fprintf('Saving %s data \n',filenames{is})
+        traces = tr(is,:);
+        traces = traces(~cellfun('isempty',{traces.network})); traces = traces(:);
+        save(filenames{is},'traces');
+    end
 end
-return
+
 
 %% irisFetch, station-by-station. SLOW but steady....
-for ista = 1:length(stations_info)
-	stnm = stations_info(ista).StationCode;
-	network = stations_info(ista).NetworkCode;
-	filename = [event_name,'/',network,'_',stnm,'.mat'];
-	if exist(filename,'file')
-		disp(['Found data file:',filename,', Skip!'])
-		continue;
-	end
-	stla = stations_info(ista).Latitude;
-	stlo = stations_info(ista).Longitude;
-	dist = distance(stla,stlo,evla,evlo);
-	if align_phase == 'O'
-		waveform_bgtime = event_Otime;
-	else
-		travel_time = interp1(p_dist,p_time,dist);
-		waveform_bgtime = event_Otime + travel_time/3600/60/24 - min_before/60/24;
-	end
-	waveform_edtime = waveform_bgtime + min_before/60/24 + min_after/60/24;
-	waveform_bgtime_str = datestr(waveform_bgtime,'yyyy-mm-dd HH:MM:SS');
-	waveform_edtime_str = datestr(waveform_edtime,'yyyy-mm-dd HH:MM:SS');
-	disp(['Downloading station: ',stnm,' From:',waveform_bgtime_str,' To:',waveform_edtime_str]);
-	try
-		traces = irisFetch.Traces(network,stnm,'*','BH?',waveform_bgtime_str,waveform_edtime_str,'includePZ');
-		save(filename,'traces');
-	catch e
-		e.message;
-		continue;
-	end
+if strcmp(req_opt,'irisFetch')
+    for ista = 1:length(stations_info)
+        if exist(filenames{is},'file')
+            disp(['Found data file:',filename,', Skip!'])
+            continue;
+        end
+        waveform_bgtime_str = datestr(waveform_bgtime(is));
+        waveform_edtime_str = datestr(waveform_edtime(is));
+        disp(['Downloading station: ',stnm,' From:',waveform_bgtime_str,' To:',waveform_edtime_str]);
+        try
+            traces = irisFetch.Traces(nwks{is},stas{is},'*','BH?',waveform_bgtime_str,waveform_edtime_str,'includePZ');
+            save(filenames{is},'traces');
+        catch e
+            e.message;
+            continue;
+        end
+    end
 end
