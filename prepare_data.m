@@ -69,6 +69,10 @@ for ista = 1:length(sta_mat_files)
 	T_az = R_az+90;
 	dataR = dataN*cosd(R_az-bhn.azimuth)+dataE*cosd(R_az-bhe.azimuth);
 	dataT = dataN*cosd(T_az-bhn.azimuth)+dataE*cosd(T_az-bhe.azimuth);
+    
+    % estimate the SNR of the data
+    [snr] = estimate_snr(dataZ,new_timeaxis,stla,stlo,evla,evlo);
+    
 	% build up structure
 	stadata(ista).stla = stla;
 	stadata(ista).stlo = stlo;
