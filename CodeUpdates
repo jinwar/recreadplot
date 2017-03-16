@@ -8,3 +8,4 @@
 -Added figure that gets plotted in plot_recread showing focal mechanisms (Celia, 3/16/17)
 -Changed directory structure to have all ancillary functions hidden away in "matguts" folder (Zach, 16/3/17)
 -Added latest IRIS jar file (2.0.15) (Zach, 16/3/17) 
+-Updated fetch_events.m to be compatible with new directory structure. Moved /.mat files to data folder. (Zach, 16/3/17)
