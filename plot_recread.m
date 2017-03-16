@@ -149,7 +149,12 @@ end
 % Currently set to 2 degree bins
 bindist = [0:2:180];
 dists = extractfield(stadata,'dist');
-[N,edges,bin] = histcounts(dists,bindist);
+[VER DATESTR] = version();
+if strcmp('2014',VER(end-5:end-2))
+    [N,bin] = histc(dists,bindist);
+else
+    [N,edges,bin] = histcounts(dists,bindist);
+end
 isgoodsnr = ones(length(dists),1);
 
 % Make a vector of the preferred traces to plot
