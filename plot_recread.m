@@ -568,11 +568,20 @@ while 1
     end
     if bot == 'g'
         xl = xlim;
-        yl = ylim;
-     
-        
+        yl = ylim; 
         [autostruct] = automode(xl, yl, freq_band, comp);
+    end
+    if bot == 'G'
+        prompt = 'What is the structure codename? ' ;
+        name = input(prompt, 's');
+        [xlims, ylims, filter, component] = pullautomode(name);
+        time_range = xlims;
+        dist_range = ylims;
+        freq_band = filter;
+        comp = component;
+        
         
     end
+    
 end
 
