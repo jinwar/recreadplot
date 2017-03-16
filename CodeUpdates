@@ -24,6 +24,8 @@
 -Added additional phases to the phasedb.mat file and added path line to the make_phasedb.m file for calling taup. Changed path for phasedb.mat in make_phasedb.m (Helen,3/16/17)
 -Added latest version of irisFetch.m (has some nice tools in there) (Zach, 16/3/17)
 -Updated download_data.m script to be able to do bulk downloads using BREAFAST tool (Zach, 16/3/17)
+-Changed plot_recread script so that the azimuth range is between -180 and 180 for all events (Celia, 3/16/17)
 -Modified prepare_data to save the event - station distance (Natalie, 3/16/17)
 -Added lines to plot_recread.m to pick out the trace with the highest SNR per 2 degree distance bin (Natalie, 3/16/17)
 -Changed plot_recread script so that the azimuth range is between -180 and 180 for all events (Celia, 3/16/17)
+-Changed colorscale for plotting phases in new cheatsheet (Celia, 3/16/17)
