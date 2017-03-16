@@ -1,6 +1,6 @@
 clear;
 
-javaaddpath('IRIS-WS-2.0.6.jar');
+% javaaddpath('IRIS-WS-2.0.6.jar');
 
 setup_parameters;
 
@@ -24,13 +24,13 @@ end
 for ie = 1:length(events_info)
 	plotm(evlas(ie),evlos(ie),'ko','markersize',round(mags(ie)*4));
 end
-[temp first_eventid] = min(bg_times);
-[temp biggest_eventid] = max(mags);
+[~,first_eventid] = min(bg_times);
+[~,biggest_eventid] = max(mags);
 plotm(evlas(first_eventid),evlos(first_eventid),'bo','markersize',round(mags(first_eventid)*4));
 plotm(evlas(biggest_eventid),evlos(biggest_eventid),'ro','markersize',round(mags(biggest_eventid)*4));
-[mlat mlon] = inputm(1);
+[mlat,mlon] = inputm(1);
 dists = distance(mlat,mlon,evlas,evlos);
-[temp eventid] = min(dists);
+[~,eventid] = min(dists);
 plotm(evlas(eventid),evlos(eventid),'ko','markersize',round(mags(eventid)*4),'markerfacecolor','g');
 
 disp(['Event: ',events_info(eventid).PreferredTime,' Mag: ', num2str(mags(eventid))]);
@@ -62,5 +62,5 @@ plotm(evlas(eventid),evlos(eventid),'rp','markersize',20,'markerfacecolor','r')
 drawnow
 
 
-save fetchdata.mat stations_info event_info
+save('data/fetchdata.mat','stations_info','event_info');
 
