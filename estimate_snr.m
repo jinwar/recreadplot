@@ -6,12 +6,18 @@
 % evdp = event depth
 %
 % NJA, 3/16/2017
-function snr = estimate_snr(data,time,stdist,evdp)
+function snr = estimate_snr(data,time,delta,stdist,evdp)
 
 isfigure = 0;
 setup_parameters;
 saved_data = data;
 
+% Make sure there's enough data to do it
+if length(data) < 1e3
+    disp('Not enough data!')
+    snr = 0;
+    return
+end
 % Loop throug the different filters
 nfilter = 3;
 snrvec = [0;0;0];
@@ -26,7 +32,6 @@ for ii = 1:nfilter
     end
     
     % Filter the data
-    delta = resample_delta;
     W = 2*delta./freqfilter;
     [filtb filta] = butter(2,W);
     data = filtfilt(filtb,filta,saved_data);
@@ -62,7 +67,9 @@ for ii = 1:nfilter
     
     % Find the closest distance to our station distance
     ind = find(abs(pdist-stdist) == min(abs(pdist-stdist)));
-    
+    if length(ind) > 1
+        ind = ind(1);
+    end
     tphase = event.time(ind);
     % Plot things if you want to check
     if isfigure
@@ -85,11 +92,28 @@ for ii = 1:nfilter
     
     noise_ind1 = find(time <= tphase-noise_wind & time > tphase-noise_wind*2);
     noise_ind2 = find(time > tphase+noise_wind & time <= tphase +noise_wind*2);
+
+    % Check to see if the vectors are in a weird shape
+    [m,n] = size(noise_ind1);
+    if m > n
+        noise_ind1 = noise_ind1';
+        noise_ind2 = noise_ind2';
+    end
+    
     noise_ind = [noise_ind1,noise_ind2];
     noise_amp = sum(data(noise_ind).^2)/length(noise_ind);
     
+    % Check to see if the time axis is long enough
+    if tphase > max(time) || tphase < min(time)
+        disp('Time axis doesnt include the P wave!')
+        break
+    end
+ 
+    try
     snrvec(ii) = (signal_amp/noise_amp)^.5;
-    
+    catch
+        disp('here');
+    end
     if isfigure
         figure(2)
         if ii == 1; clf; end;
