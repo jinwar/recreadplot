@@ -296,16 +296,13 @@ while 1
                 end
 			end
 			trace_amp = amp*diff(dist_range)/(2*N_trace);
-<<<<<<< HEAD
             if snr > 0.5
-                plot(timeaxis,data*trace_amp+dists(ista),'k');
-=======
             if (plot_bw==1)
                 plot(timeaxis,data*trace_amp+dists(ista),'k');
             else
                 plot(timeaxis,data*trace_amp+dists(ista),'Color',...
                     [(azi(ista)+180)/360 0 1-(azi(ista)+180)/360]);
->>>>>>> natalie/master
+            end
             end
 			if isfill
 				data(find(data > 0)) = 0;
