@@ -19,7 +19,7 @@ min_epi_dist = 0;
 max_epi_dist = 100;
 
 % define donwload waveform length
-align_phase = 'P';   % O for original time, P for P phase
+align_phase = 'P';   % 'O' for original time, 'P' for P phase (can actually use any phase, but not recommended other than O|P|S)
 min_before = 10;   % minutes before the phase
 min_after = 60; %  minutes after the phase
 
