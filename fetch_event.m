@@ -24,6 +24,7 @@ end
 for ie = 1:length(events_info)
 	plotm(evlas(ie),evlos(ie),'ko','markersize',round(mags(ie)*4),'LineWidth',2);
 end
+
 [temp first_eventid] = min(bg_times);
 [temp biggest_eventid] = max(mags);
 %addlinesstart changed colors
@@ -34,6 +35,7 @@ dists = distance(mlat,mlon,evlas,evlos);
 [temp eventid] = min(dists);
 plotm(evlas(eventid),evlos(eventid),'ko','markersize',round(mags(eventid)*4),'markerfacecolor',[0.0235    0.5255    0.3294],'LineWidth',2);
 %addlinesend
+
 disp(['Event: ',events_info(eventid).PreferredTime,' Mag: ', num2str(mags(eventid))]);
 
 com = input('Is this the right event (y/n) : ','s');
