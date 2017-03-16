@@ -399,10 +399,7 @@ while 1
 	end
 
 	[x y bot] = ginput(1);
-	if ~is_dist
-		is_dist = 1;
-		continue;
-	end
+
 	if bot == 'q'
 		break;
 	end
@@ -464,7 +461,11 @@ while 1
 		isfill = ~isfill;
 	end
 	if bot == 'd'
-		is_dist = ~is_dist;
+        if ~is_dist
+            is_dist = 1;
+        else
+            is_dist = ~is_dist;
+        end
 	end
 	if bot == '.'
 		if is_mark
