@@ -1,17 +1,20 @@
 clear;
 
-%phasenames = {'P','S','PP','PPP','PKIKP','SSS','SSSS','PKKP','PKKKP','PKIKKIKP'}
-%phasenames = {'P','S','pP','sS','SS','SKS','ScS','SKKS','PcP'}
-%phasenames = {'Pdiff','Sdiff','SP','PPPP','PSP','SSP'}
-%phasenames = {'SKKKS','SKIKKIKS'}
-%phasenames = {'SSP','PPSS'}
-%phasenames = {'pP','pS','sP','sS'};
-%phasenames = {'PKiKP'}
-%phasenames = {'PcP','ScS','ScSScS'}
-phasenames = {'PKP','PKPPKP'}
+setenv('PATH',[path ':/usr/bin:/usr/local/TauP-2.1.2/bin']); % change path for specific computer
 
-if exist('phasedb.mat','file')
-	load phasedb.mat
+% phasenames = {'P','S','PP','PPP','PKIKP','SSS','SSSS','PKKP','PKKKP','PKIKKIKP'}
+% phasenames = {'P','S','pP','sS','SS','SKS','ScS','SKKS','PcP'}
+% phasenames = {'Pdiff','Sdiff','SP','PPPP','PSP','SSP'}
+% phasenames = {'SKKKS','SKIKKIKS'}
+% phasenames = {'SSP','PPSS'}
+% phasenames = {'pP','pS','sP','sS'};
+% phasenames = {'PKiKP'}
+% phasenames = {'PcP','ScS','ScSScS'}
+% phasenames = {'PKP','PKPPKP'}
+phasenames = {'PKKS','ScP','PcPPKP','PKPPKS','SKIKP','SKKKKS','SKP','SKiKP','PKIIKP','SKIIKS','SKIIKP','PKIKPPKIKP','PKPSKS','SKSSKS','PKKKP','PcPPKPPKP','SKIKKIKP','SKIKSSKIKS','PcPPcP','PcPPcPPcP','PcPPcPPcPPcP','ScSScSScS','ScSScSScSScS','ScSPcPScS','PcPScSPcPScS','PKPScP'};
+
+if exist('data/phasedb.mat','file')
+	load data/phasedb.mat
 	exist_phase_names = [phases.name];
 else
 	phases = [];
@@ -24,8 +27,8 @@ for ip = 1:length(phasenames)
 	end
 	disp(char(phasenames(ip)));
 	phases(end+1).name = phasenames(ip);
-	system(['taup_table -model prem -ph ',char(phasenames(ip)),' | awk ''{print $2,$3,$5}'' > phasetemp.txt']);
-	data = load('phasetemp.txt');
+	system(['taup_table -model prem -ph ',char(phasenames(ip)),' | awk ''{print $2,$3,$5}'' > data/phasetemp.txt']);
+	data = load('data/phasetemp.txt');
 	evdp = data(:,2);
 	depths = unique(evdp);
 	for id = 1:length(depths)
@@ -39,7 +42,7 @@ for ip = 1:length(phasenames)
 	phases(end).evdps = depths;
 end
 
-save('phasedb.mat','phases');
+save('data/phasedb.mat','phases');
 
 
 
