@@ -235,7 +235,7 @@ end
 colormap = importdata('matguts/matter.cpt',' ',2);
 color_ind = linspace(colormap.data(1,1),colormap.data(end,1),phasenum_all);
 color_ind = round(color_ind);
-cmap = [colormap.data(color_ind,2) colormap.data(color_ind,3) colormap.data(color_ind,4)];
+cmap = flipud([colormap.data(color_ind,2) colormap.data(color_ind,3) colormap.data(color_ind,4)]);
 
 while 1
 
