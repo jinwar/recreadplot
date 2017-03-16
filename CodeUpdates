@@ -10,4 +10,4 @@
 -Changed directory structure to have all ancillary functions hidden away in "matguts" folder (Zach, 16/3/17)
 -Added latest IRIS jar file (2.0.15) (Zach, 16/3/17) 
 -Updated fetch_events.m to be compatible with new directory structure. Moved /.mat files to data folder. (Zach, 16/3/17)
-
+-Added additional phases to the phasedb.mat file and added path line to the make_phasedb.m file for calling taup. Changed path for phasedb.mat in make_phasedb.m (Helen,3/16/17)
