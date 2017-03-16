@@ -1,3 +1,8 @@
+% event parameters
+lat_range = [-25 -22];
+lon_range = [-179 -177];
+mag_range = [6.6 7.2];
+start_time = '2017-02-24 0:00:00';
 rrdir = pwd;
 addpath([rrdir,'/matguts']);
 addpath([rrdir,'/data']);
@@ -30,7 +35,7 @@ req_opt = 'breqfast'; % 'breqfast' | 'irisFetch'
 % Waveform processing parameters
 lowfilter = [200 30];
 midfilter = [25 5];
-highfilter = [2 0.25];
+highfilter = [5 2];
 resample_delta = 0.1;
 
 % Waveform plotting parameters
