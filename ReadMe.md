@@ -21,3 +21,11 @@ TIP: You must restart your matlab if you plug or unplug a monitor to your comput
 Enjoy!
 
 Jingle
+
+### Notes from record reading code during record reading Hackathon on 3/16/17:
+
+In order to plot radiation patterns, download the Quick CMT solution in the 'ndk' file format from:
+http://www.globalcmt.org/CMTfiles.html
+Name the file CMTSOLUTION and put it in the directory from which you are running the scripts.
+(Updated by Celia, 3/16/17)
+

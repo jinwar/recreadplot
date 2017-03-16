@@ -104,4 +104,4 @@ for ista = 1:length(stadata)
 	stadata(ista).high_dataT = filtfilt(highb,higha,stadata(ista).odataT);
 end
 
-save(event_name,'stadata','evla','evlo','evdp');
+save(event_name,'stadata','evla','evlo','evdp','-v7.3');
