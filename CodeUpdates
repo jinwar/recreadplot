@@ -28,3 +28,4 @@
 -Modified prepare_data to save the event - station distance (Natalie, 3/16/17)
 -Added lines to plot_recread.m to pick out the trace with the highest SNR per 2 degree distance bin (Natalie, 3/16/17)
 -Changed plot_recread script so that the azimuth range is between -180 and 180 for all events (Celia, 3/16/17)
+-Changed colorscale for plotting phases in new cheatsheet (Celia, 3/16/17)

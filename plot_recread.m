@@ -231,6 +231,11 @@ for ip = 1:length(exist_phase_names)
 		eventphases_all(phasenum_all).name = char(phases(phaseid).name);
 end
 
+%Read in colormap for plotting phases
+colormap = importdata('matguts/matter.cpt',' ',2);
+color_ind = linspace(colormap.data(1,1),colormap.data(end,1),phasenum_all);
+color_ind = round(color_ind);
+cmap = [colormap.data(color_ind,2) colormap.data(color_ind,3) colormap.data(color_ind,4)];
 
 while 1
 
@@ -371,13 +376,13 @@ while 1
             temp2 = abs(phasetime-cheat_loc(1));
             ind1 = find(temp1 <= newcheat_max_dist);
             if (min(temp2(ind1)) <= newcheat_max_time);
-                plot(phasetime,phasedist,'b');
+                plot(phasetime,phasedist,'Color',cmap(ip,:)./256,'LineWidth',2.5);
                 texty = dist_range(1) + diff(dist_range)*(.3+rand/5-.2);
                 textx = interp1(phasedist,phasetime,texty);
-                text(textx,texty,eventphases_all(ip).name,'color','r','fontsize',20,'linewidth',2);
+                text(textx,texty,eventphases_all(ip).name,'Color',cmap(ip,:)./256,'fontsize',20,'linewidth',2);
                 texty = dist_range(1) + diff(dist_range)*(.7+rand/5);
                 textx = interp1(phasedist,phasetime,texty);
-                text(textx,texty,eventphases_all(ip).name,'color','r','fontsize',20,'linewidth',2);
+                text(textx,texty,eventphases_all(ip).name,'Color',cmap(ip,:)./256,'fontsize',20,'linewidth',2);
             end
         end
     end
