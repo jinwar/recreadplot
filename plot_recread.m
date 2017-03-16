@@ -58,11 +58,14 @@ comp = 1;
 single_norm = 1;
 amp = 5;
 norm_amp = 1;
+newcheat_max_dist = 3;
+newcheat_max_time = 100;
 isfill = 0;
 is_reduce_v = 0;
 ref_v = 10;
 is_dist = 1;
 is_cheatsheet = 0;
+is_newcheatsheet = 0;
 is_bin = 1;
 is_mark = 0;
 amp_diff_tol = 5;
@@ -296,7 +299,31 @@ while 1
 			textx = interp1(phasedist,phasetime,texty);
 			text(textx,texty,eventphases(ip).name,'color','r','fontsize',20,'linewidth',2);
 		end
-	end
+    end
+    if is_newcheatsheet
+        for ip = 1:length(eventphases)
+            phasedist = eventphases(ip).dists;
+            phasetime = eventphases(ip).times;
+            ind = find(isnan(phasetime));
+            phasetime(ind) = [];
+            phasedist(ind) = [];
+            if is_reduce_v
+				phasetime = phasetime - deg2km(phasedist)./ref_v;
+            end
+            temp1 = abs(phasedist-cheat_loc(2));
+            temp2 = abs(phasetime-cheat_loc(1));
+            ind1 = find(temp1 <= newcheat_max_dist);
+            if (min(temp2(ind1)) <= newcheat_max_time);
+                plot(phasetime,phasedist,'b');
+                texty = dist_range(1) + diff(dist_range)*(.3+rand/5-.2);
+                textx = interp1(phasedist,phasetime,texty);
+                text(textx,texty,eventphases(ip).name,'color','r','fontsize',20,'linewidth',2);
+                texty = dist_range(1) + diff(dist_range)*(.7+rand/5);
+                textx = interp1(phasedist,phasetime,texty);
+                text(textx,texty,eventphases(ip).name,'color','r','fontsize',20,'linewidth',2);
+            end
+        end
+    end
 	if is_dist
 		ylim(dist_range);
 	else
@@ -563,8 +590,13 @@ while 1
     if bot == 'c'
 		is_cheatsheet = ~is_cheatsheet;
     end
-    
-    if bot == 'b'
+    if bot == 'C'
+        plot(x,y,'b.','MarkerSize',30);
+        pause(0.5)
+        cheat_loc = [x y];
+        is_newcheatsheet = ~is_newcheatsheet;
+    end
+	if bot == 'b'
 		is_bin = ~is_bin;
     end
     
