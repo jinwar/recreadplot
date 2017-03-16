@@ -1,6 +1,6 @@
 clear
 
-load fetchdata.mat
+load data/fetchdata.mat
 setup_parameters
 
 event_Otime = datenum(event_info.PreferredTime,'yyyy-mm-dd HH:MM:SS.FFF');

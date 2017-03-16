@@ -43,18 +43,28 @@ end
 waveform_bgtime = event_Otime + travel_time/3600/24 - min_before/60/24;
 waveform_edtime = waveform_bgtime + min_before/60/24 + min_after/60/24;
 
+filenames = cell(length(stations_info),1);
+for is = 1:length(stations_info)
+    filenames{is} = [event_name,'/',nwks{is},'_',stas{is},'.mat'];
+end
+
 
 %% breq_fast, email request. FAST & in bulk
 label = ['recread',event_name];
 email_matlab_setup;
 % ========================= DATA REQUESTED HERE ===========================
-breq_fast_request(label,'recreader',stas,'BH?',nwks,'*',waveform_bgtime,waveform_edtime,'SEED',[event_name,'_BREQFAST_REQUEST'])
+% breq_fast_request(label,'recreader',stas,'BH?',nwks,'*',waveform_bgtime,waveform_edtime,'SEED',[event_name,'_BREQFAST_REQUEST'])
 
 % ======================= DATA PROCESSED FROM HERE ========================
 % ============= PROCEED FROM THIS POINT WHEN DATA IS READY ================
 
 tr = breq_fast_process(label,'recreader',stas,'BH?',nwks,'*',waveform_bgtime);
-
+for is = 1:length(stations_info)
+    fprintf('Saving %s data \n',filenames{is})
+    traces = tr(is,:);
+    traces = traces(~cellfun('isempty',{traces.network})); traces = traces(:);
+    save(filenames{is},'traces');
+end
 return
 
 %% irisFetch, station-by-station. SLOW but steady....

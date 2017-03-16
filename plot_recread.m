@@ -2,10 +2,8 @@
 % written by Ge Jin, jinwar@gmail.com, ge.jin@ldeo
 % 2013-03-29
 %
-%event_name = '201303102251';
-
-%load(event)
 load phasedb.mat
+
 setup_parameters
 N_trace = 100;
 
@@ -69,6 +67,7 @@ is_newcheatsheet = 0;
 is_bin = 1;
 is_mark = 0;
 amp_diff_tol = 5;
+plot_bw = 1; %black and white/color plotting
 
 figure(89)
 clf
@@ -140,7 +139,6 @@ for i=1:length(circleRs)
 end
 
 if exist('CMTSOLUTION','file')
-    print('found it')
     CMTSOLUTION = './CMTSOLUTION';
     eq = readCMTfile(CMTSOLUTION);  
     figure(92)
@@ -180,6 +178,32 @@ for ip = 1:length(cheatsheetphases)
 		disp(['Cannot find travel time information in the phase database for ',char(phasename)]);
 		disp(['Please use make_phasedb to increase the database']);
 	end
+end
+
+phasenum_all = 0;
+eventphases_all = [];
+
+for ip = 1:length(exist_phase_names)
+        phasename = exist_phase_names{ip};
+        phaseid = find(ismember(exist_phase_names,phasename));
+		[evdpdiff depthid] = min(abs(phases(phaseid).evdps - evdp));
+		if evdpdiff > 50
+			disp(['No phase ',char(phasename),' for this event depth'])
+		end
+		phasenum_all = phasenum_all+1;
+		odist = phases(phaseid).event(depthid).dist;
+		otime = phases(phaseid).event(depthid).time;
+		uni_dist = unique(odist);
+		uni_time = uni_dist;
+		for id = 1:length(uni_dist)
+			uni_time(id) = min(otime(find(odist == uni_dist(id))));
+		end
+
+		eventphases_all(phasenum_all).dists = uni_dist;
+		eventphases_all(phasenum_all).times = uni_time;
+		eventphases_all(phasenum_all).alldists = odist;
+		eventphases_all(phasenum_all).alltimes = otime;
+		eventphases_all(phasenum_all).name = char(phases(phaseid).name);
 end
 
 
@@ -257,7 +281,12 @@ while 1
 				end
 			end
 			trace_amp = amp*diff(dist_range)/(2*N_trace);
-			plot(timeaxis,data*trace_amp+dists(ista),'k');
+            if (plot_bw==1)
+                plot(timeaxis,data*trace_amp+dists(ista),'k');
+            else
+                plot(timeaxis,data*trace_amp+dists(ista),'Color',...
+                    [(azi(ista)+180)/360 0 1-(azi(ista)+180)/360]);
+            end
 			if isfill
 				data(find(data > 0)) = 0;
 				area(timeaxis,data*trace_amp+dists(ista),dists(ista),'facecolor','b');
@@ -277,7 +306,12 @@ while 1
 				end
 			end
 			trace_amp = amp*diff(azi_range)/(2*N_trace);
-			plot(timeaxis,data*trace_amp+azi(ista),'k');
+            if (plot_bw==1)
+                plot(timeaxis,data*trace_amp+azi(ista),'k');
+            else
+                plot(timeaxis,data*trace_amp+azi(ista),'Color',...
+                    [dists(ista)/180 0 1-dists(ista)/180]);
+            end
 			if isfill
 				data(find(data > 0)) = 0;
 				area(timeaxis,data*trace_amp+azi(ista),azi(ista),'facecolor','b');
@@ -304,9 +338,9 @@ while 1
 		end
     end
     if is_newcheatsheet
-        for ip = 1:length(eventphases)
-            phasedist = eventphases(ip).dists;
-            phasetime = eventphases(ip).times;
+        for ip = 1:length(eventphases_all)
+            phasedist = eventphases_all(ip).dists;
+            phasetime = eventphases_all(ip).times;
             ind = find(isnan(phasetime));
             phasetime(ind) = [];
             phasedist(ind) = [];
@@ -320,10 +354,10 @@ while 1
                 plot(phasetime,phasedist,'b');
                 texty = dist_range(1) + diff(dist_range)*(.3+rand/5-.2);
                 textx = interp1(phasedist,phasetime,texty);
-                text(textx,texty,eventphases(ip).name,'color','r','fontsize',20,'linewidth',2);
+                text(textx,texty,eventphases_all(ip).name,'color','r','fontsize',20,'linewidth',2);
                 texty = dist_range(1) + diff(dist_range)*(.7+rand/5);
                 textx = interp1(phasedist,phasetime,texty);
-                text(textx,texty,eventphases(ip).name,'color','r','fontsize',20,'linewidth',2);
+                text(textx,texty,eventphases_all(ip).name,'color','r','fontsize',20,'linewidth',2);
             end
         end
     end
@@ -568,7 +602,16 @@ while 1
 		amp = 5;
 		ref_v = 10;
 		is_dist = 1;
-	end
+    end
+    
+    if bot == 'w'
+        if (plot_bw == 0)
+            plot_bw = 1; %black and white trace plotting - default
+        else
+            plot_bw = 0; %color traces by dist/azi
+        end
+    end
+    
 	if bot == 'r'
 		comp = 2;
 	end
