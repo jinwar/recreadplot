@@ -18,6 +18,46 @@ event_name = datestr(event_Otime,'yyyymmddHHMM');
 
 if ~exist(event_name,'dir') mkdir(event_name); end
 
+%% breq_fast, email request. FAST & in bulk
+label = ['recread',event_name];
+
+stas = {stations_info.StationCode}';
+nwks = {stations_info.NetworkCode}';
+
+% timing of requested waveforms
+travel_time=zeros(length(stations_info),1);
+if strcmp(align_phase,'O')
+    % no change
+elseif strcmp(align_phase,'P')
+    stdists = distance(evla,evlo,[stations_info.Latitude],[stations_info.Longitude])';
+    travel_time = interp1(p_dist,p_time,stdists); % get time from interpolation of P-time function
+else 
+    stdists = distance(evla,evlo,[stations_info.Latitude],[stations_info.Longitude])';
+    for is = 1:length(stations_info)
+        tt = tauptime('deg',stdists(is),'depth',event_info.PreferredDepth,'phases',align_phase);
+        if isempty(tt), error('No phase %s at station %s to align on',align_phase,stations_info(is).StationCode); end
+        travel_time(is,1) = tt(1).time;
+    end
+end
+
+waveform_bgtime = event_Otime + travel_time/3600/24 - min_before/60/24;
+waveform_edtime = waveform_bgtime + min_before/60/24 + min_after/60/24;
+
+
+%% breq_fast, email request. FAST & in bulk
+label = ['recread',event_name];
+email_matlab_setup;
+% ========================= DATA REQUESTED HERE ===========================
+breq_fast_request(label,'recreader',stas,'BH?',nwks,'*',waveform_bgtime,waveform_edtime,'SEED',[event_name,'_BREQFAST_REQUEST'])
+
+% ======================= DATA PROCESSED FROM HERE ========================
+% ============= PROCEED FROM THIS POINT WHEN DATA IS READY ================
+
+tr = breq_fast_process(label,'recreader',stas,'BH?',nwks,'*',waveform_bgtime);
+
+return
+
+%% irisFetch, station-by-station. SLOW but steady....
 for ista = 1:length(stations_info)
 	stnm = stations_info(ista).StationCode;
 	network = stations_info(ista).NetworkCode;
