@@ -565,6 +565,14 @@ while 1
 	end
 	if bot == 'b'
 		is_bin = ~is_bin;
-	end
+    end
+    if bot == 'g'
+        xl = xlim;
+        yl = ylim;
+     
+        
+        [autostruct] = automode(xl, yl, freq_band, comp);
+        
+    end
 end
 
