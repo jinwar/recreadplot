@@ -137,7 +137,6 @@ for i=1:length(circleRs)
 end
 
 if exist('CMTSOLUTION','file')
-    print('found it')
     CMTSOLUTION = './CMTSOLUTION';
     eq = readCMTfile(CMTSOLUTION);  
     figure(92)
