@@ -2,10 +2,8 @@
 % written by Ge Jin, jinwar@gmail.com, ge.jin@ldeo
 % 2013-03-29
 %
-event_name = '201409060653.mat';
+load phasedb.mat
 
-load(event_name)
-load data/phasedb.mat
 setup_parameters
 N_trace = 100;
 
@@ -40,10 +38,8 @@ stlos = [stadata.stlo];
 
 %% Things you may need to change:
 % for event from south
-if mean(azi) < 90 || mean(azi) > 270
-	ind = find(azi>180);
-	azi(ind) = azi(ind) - 360;
-end
+ind = find(azi>180); 
+azi(ind) = azi(ind) - 360;
 dist_range = [min(dists) max(dists)];
 
 % parameters that not need to be changed.
@@ -597,7 +593,7 @@ while 1
 		hist_dist_range(zoom_level,:) = ori_dist_range;
 		time_range = hist_time_range(zoom_level,:);
 		dist_range = hist_dist_range(zoom_level,:);
-		azi_range = [0 360];
+		azi_range = [-180 180];
 		isfill = 0;
 		is_reduce_v = 0;
 		single_norm = 1;
