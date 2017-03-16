@@ -10,4 +10,6 @@
 -Changed directory structure to have all ancillary functions hidden away in "matguts" folder (Zach, 16/3/17)
 -Added latest IRIS jar file (2.0.15) (Zach, 16/3/17) 
 -Updated fetch_events.m to be compatible with new directory structure. Moved /.mat files to data folder. (Zach, 16/3/17)
-
+-Updated prepare_data.m and plot_recread to add station info functionality using 'k' keyword (Martin, 16/3/17)
+-Updated command_list.txt (Martin, 16/3/17)
+-Updated plots in fetchdata and plot_recread (Martin, 16/3/17)
