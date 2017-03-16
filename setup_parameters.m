@@ -1,3 +1,6 @@
+rrdir = pwd;
+addpath([rrdir,'/matguts']);
+javaaddpath([rrdir,'/matguts/IRIS-WS-2.0.15.jar']);
 
 % event parameters
 lat_range = [-27 -26];
@@ -7,10 +10,11 @@ start_time = '2014-09-06 01:00:00';
 search_time_range = 10; % in hour
 
 % station parameters
+%station_network = '_US-ALL';
 %station_network = '_GSN';
 %station_network = 'TA';
 %station_network = '*';
-station_network = '_US-ALL,_GSN';
+station_network = '_GSN';
 min_epi_dist = 0;
 max_epi_dist = 100;
 
@@ -27,5 +31,5 @@ highfilter = [2 0.25];
 resample_delta = 0.1;
 
 % Waveform plotting parameters
-time_range = [-600 6000];
+time_range = [-600 3000];
 

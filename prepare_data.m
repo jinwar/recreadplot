@@ -72,6 +72,12 @@ for ista = 1:length(sta_mat_files)
 	% build up structure
 	stadata(ista).stla = stla;
 	stadata(ista).stlo = stlo;
+    
+    %addLinesStart - Martin added station and network to stadata struct
+    stadata(ista).stnm = bhz.station;
+    stadata(ista).net = bhz.network;
+    %addLinesEnd
+    
 	stadata(ista).stnm = bhz.station;
 	stadata(ista).timeaxis = new_timeaxis;
 	stadata(ista).odataZ = dataZ;
