@@ -2,10 +2,8 @@
 % written by Ge Jin, jinwar@gmail.com, ge.jin@ldeo
 % 2013-03-29
 %
-event_name = '201409060653.mat';
+load phasedb.mat
 
-load(event_name)
-load data/phasedb.mat
 setup_parameters
 N_trace = 100;
 
