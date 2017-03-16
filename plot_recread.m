@@ -305,8 +305,22 @@ while 1
             if (plot_bw==1)
                 plot(timeaxis,data*trace_amp+dists(ista),'k');
             else
-                plot(timeaxis,data*trace_amp+dists(ista),'Color',...
-                    [(azi(ista)+180)/360 0 1-(azi(ista)+180)/360]);
+                if(azi(ista)<0)
+                    plot(timeaxis,data*trace_amp+dists(ista),'Color',...
+                        [(azi(ista)+180)/180 0 1-(azi(ista)+180)/180]);
+                else
+                    plot(timeaxis,data*trace_amp+dists(ista),'Color',...
+                        [1-(azi(ista))/180 0 (azi(ista))/180]);
+                end
+                azicolor = zeros(361,3);
+                azicolor(182:361,1) = 1-((1:180))/180;
+                azicolor(1:181,1) = ((-180:0)+180)/180;
+                azicolor(182:361,3) = (1:180)/180;
+                azicolor(1:181,3) = 1-(180+(-180:0))/180;
+                colormap(azicolor)
+                cbar = colorbar;
+                caxis([-180 180]);
+                title(cbar, 'Azimuth','FontSize',12)
             end
             end
 			if isfill
@@ -330,6 +344,13 @@ while 1
             else
                 plot(timeaxis,data*trace_amp+azi(ista),'Color',...
                     [dists(ista)/180 0 1-dists(ista)/180]);
+                distcolor = zeros(181,3);
+                distcolor(:,1) = (0:180)/180;
+                distcolor(:,3) = 1-(0:180)/180;
+                colormap(distcolor)
+                cbar = colorbar;
+                caxis([0 180]);
+                title(cbar,'Distance','FontSize',12)
             end
             end
 			if isfill
