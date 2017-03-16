@@ -38,7 +38,7 @@ stlos = [stadata.stlo];
 
 %% Things you may need to change:
 % for event from south
-ind = find(azi>180);
+ind = find(azi>180); 
 azi(ind) = azi(ind) - 360;
 dist_range = [min(dists) max(dists)];
 
