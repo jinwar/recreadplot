@@ -32,6 +32,12 @@ b : plot all data or plot bin data (bin data only plots one trace in each bin, n
 Other information:
 / : show station map within the distance range
 c : bring out phase cheat sheet
+C : new cheatsheet
+k : get station data from IRIS and plots a map
+
+Sounds:
+s : Play sonified trace from closest seismogram
+S : Play sonified trace from selected station on USA map
 
 System:
 q : quit
