@@ -1,5 +1,5 @@
 function breq_fast_request(label,usrname,stas,chans,nwks,locs,starttimes,endtimes,datatype,ofile)
-%     breq_fast_request(label,stas,chans,nwks,locs,starttimes,endtimes,datatype,ofile)
+%     breq_fast_request(label,usrname,stas,chans,nwks,locs,starttimes,endtimes,datatype,ofile)
 % function to make a BREQ_FAST request file and email it to IRIS to request
 % the data, by specifying a station and event parameters. This will create
 % a request file with each data window requested on a separate line, of the
@@ -10,6 +10,7 @@ function breq_fast_request(label,usrname,stas,chans,nwks,locs,starttimes,endtime
 % INPUTS:
 %  label   - identifying label for request (string)
 %            IF empty, default is USER_request_TIMESTRING
+%  usrname - username for the request
 %  stas    - string or {Nsx1} cell array of station names
 %  nwks    - string or {Nsx1} cell array of networks (must either be one
 %            value or a cell array of the same length as the stas cell 
