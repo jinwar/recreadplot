@@ -177,6 +177,8 @@ for ip = 1:length(cheatsheetphases)
 end
 
 
+first_plot_pass = 1;
+
 while 1
 
 
@@ -251,6 +253,14 @@ while 1
 				end
 			end
 			trace_amp = amp*diff(dist_range)/(2*N_trace);
+			
+			if first_plot_pass == 1
+				trace_amp_orig = trace_amp;
+				first_plot_pass = 0;
+			end
+			
+			trace_amp = trace_amp_orig;
+			
 			plot(timeaxis,data*trace_amp+dists(ista),'k');
 			if isfill
 				data(find(data > 0)) = 0;
