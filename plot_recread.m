@@ -137,7 +137,6 @@ for i=1:length(circleRs)
 end
 
 if exist('CMTSOLUTION','file')
-    print('found it')
     CMTSOLUTION = './CMTSOLUTION';
     eq = readCMTfile(CMTSOLUTION);  
     figure(92)
@@ -177,6 +176,32 @@ for ip = 1:length(cheatsheetphases)
 		disp(['Cannot find travel time information in the phase database for ',char(phasename)]);
 		disp(['Please use make_phasedb to increase the database']);
 	end
+end
+
+phasenum_all = 0;
+eventphases_all = [];
+
+for ip = 1:length(exist_phase_names)
+        phasename = exist_phase_names{ip};
+        phaseid = find(ismember(exist_phase_names,phasename));
+		[evdpdiff depthid] = min(abs(phases(phaseid).evdps - evdp));
+		if evdpdiff > 50
+			disp(['No phase ',char(phasename),' for this event depth'])
+		end
+		phasenum_all = phasenum_all+1;
+		odist = phases(phaseid).event(depthid).dist;
+		otime = phases(phaseid).event(depthid).time;
+		uni_dist = unique(odist);
+		uni_time = uni_dist;
+		for id = 1:length(uni_dist)
+			uni_time(id) = min(otime(find(odist == uni_dist(id))));
+		end
+
+		eventphases_all(phasenum_all).dists = uni_dist;
+		eventphases_all(phasenum_all).times = uni_time;
+		eventphases_all(phasenum_all).alldists = odist;
+		eventphases_all(phasenum_all).alltimes = otime;
+		eventphases_all(phasenum_all).name = char(phases(phaseid).name);
 end
 
 
@@ -301,9 +326,9 @@ while 1
 		end
     end
     if is_newcheatsheet
-        for ip = 1:length(eventphases)
-            phasedist = eventphases(ip).dists;
-            phasetime = eventphases(ip).times;
+        for ip = 1:length(eventphases_all)
+            phasedist = eventphases_all(ip).dists;
+            phasetime = eventphases_all(ip).times;
             ind = find(isnan(phasetime));
             phasetime(ind) = [];
             phasedist(ind) = [];
@@ -317,10 +342,10 @@ while 1
                 plot(phasetime,phasedist,'b');
                 texty = dist_range(1) + diff(dist_range)*(.3+rand/5-.2);
                 textx = interp1(phasedist,phasetime,texty);
-                text(textx,texty,eventphases(ip).name,'color','r','fontsize',20,'linewidth',2);
+                text(textx,texty,eventphases_all(ip).name,'color','r','fontsize',20,'linewidth',2);
                 texty = dist_range(1) + diff(dist_range)*(.7+rand/5);
                 textx = interp1(phasedist,phasetime,texty);
-                text(textx,texty,eventphases(ip).name,'color','r','fontsize',20,'linewidth',2);
+                text(textx,texty,eventphases_all(ip).name,'color','r','fontsize',20,'linewidth',2);
             end
         end
     end
