@@ -326,6 +326,7 @@ while 1
                 plot(timeaxis,data*trace_amp+azi(ista),'Color',...
                     [dists(ista)/180 0 1-dists(ista)/180]);
             end
+            end
 			if isfill
 				data(find(data > 0)) = 0;
 				area(timeaxis,data*trace_amp+azi(ista),azi(ista),'facecolor','b');
