@@ -37,7 +37,7 @@ stlos = [stadata.stlo];
 [dists azi] = distance(evla,evlo,stlas,stlos);
 
 %% Things you may need to change:
-% for event from south
+% for all events
 ind = find(azi>180); 
 azi(ind) = azi(ind) - 360;
 dist_range = [min(dists) max(dists)];
@@ -145,6 +145,33 @@ if exist('CMTSOLUTION','file')
     radpplot(eq.np1(1),eq.np1(2),eq.np1(3),3,92,[1 3 3]);
 end
 
+% Determine the bins to use for the data
+% Currently set to 2 degree bins
+bindist = [0:2:180];
+dists = extractfield(stadata,'dist');
+[VER DATESTR] = version();
+if strcmp('2014',VER(end-5:end-2))
+    [N,bin] = histc(dists,bindist);
+else
+    [N,edges,bin] = histcounts(dists,bindist);
+end
+isgoodsnr = ones(length(dists),1);
+
+% Make a vector of the preferred traces to plot
+for ii = 1:length(N)
+    
+    % if there's more than one trace per distance bin
+    if N(ii) > 1
+        ibin = find(bin == ii);
+        
+        % Determine which has the highest SNR
+        snrvec = extractfield(stadata,'snr');
+        [dum,imax] = max(snrvec(ibin));
+        isgoodsnr(ibin) = 0;
+        isgoodsnr(ibin(imax)) = 1;
+    end
+end
+
 % Gather phase travel-time information
 phasenum = 0;
 eventphases = [];
@@ -246,6 +273,8 @@ while 1
 		is_in_azi(ista) = azi_isin;
 		if ~azi_isin continue; end
 		timeaxis = stadata(ista).timeaxis;
+        snr = stadata(ista).snr;
+        snrmax = 1.2;
 		if is_reduce_v
 			timeaxis = timeaxis - deg2km(dists(ista))./ref_v;
 		end
@@ -266,24 +295,19 @@ while 1
 		end
 		if is_dist
 			if is_bin
-				bin_id = round((dists(ista)-dist_bin(1))./(dist_bin(2)-dist_bin(1)));
-				if bin_id == 0
-					bin_id = bin_id+1;
-				end
-				if bin_id > length(plot_bin)
-					bin_id = bin_id-1;
-				end
-				plot_bin(bin_id) = plot_bin(bin_id)+1;
-				if plot_bin(bin_id) > 1
-					continue;
-				end
+                % Find the isgood value of the current station
+                if isgoodsnr(ista) == 0
+                    continue
+                end
 			end
 			trace_amp = amp*diff(dist_range)/(2*N_trace);
+            if snr > 0.5
             if (plot_bw==1)
                 plot(timeaxis,data*trace_amp+dists(ista),'k');
             else
                 plot(timeaxis,data*trace_amp+dists(ista),'Color',...
                     [(azi(ista)+180)/360 0 1-(azi(ista)+180)/360]);
+            end
             end
 			if isfill
 				data(find(data > 0)) = 0;
@@ -294,21 +318,19 @@ while 1
 			end
 		else
 			if is_bin
-				bin_id = round((azi(ista)-azi_bin(1))./(azi_bin(2)-azi_bin(1)));
-				if bin_id < 1 || bin_id > length(plot_bin)
-					continue;
-				end
-				plot_bin(bin_id) = plot_bin(bin_id)+1;
-				if plot_bin(bin_id) > 1
-					continue;
-				end
+                % Find the isgood value of the current station
+                if isgoodsnr(ista) == 0
+                    continue
+                end
 			end
 			trace_amp = amp*diff(azi_range)/(2*N_trace);
+            if snr > 0.5
             if (plot_bw==1)
                 plot(timeaxis,data*trace_amp+azi(ista),'k');
             else
                 plot(timeaxis,data*trace_amp+azi(ista),'Color',...
                     [dists(ista)/180 0 1-dists(ista)/180]);
+            end
             end
 			if isfill
 				data(find(data > 0)) = 0;
