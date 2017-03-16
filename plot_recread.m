@@ -73,68 +73,71 @@ plot_bw = 1; %black and white/color plotting
 
 figure(89)
 clf
+set(gcf,'color','w');
 ax = usamap('conus');
 load states.mat
-geoshow(ax, states, 'FaceColor', [0.5 0.5 1])
+geoshow(ax, states, 'FaceColor', [0.9 0.9 0.9])
 ind = find(dists>dist_range(1) & dists < dist_range(2));
-stah = plotm(stlas(ind),stlos(ind),'rv');
-circleRs = floor(dist_range(1)/10)*10:10:ceil(dist_range(2)/10)*10;
+stah = plotm(stlas(ind),stlos(ind),'v','MarkerSize',10,'Color',[0.8118    0.1804    0.1922],'MarkerFaceColor',[0.8118    0.1804    0.1922]);
+circleRs = floor(dist_range(1)/10)*10:10:(ceil(dist_range(2)/10)*10-10);
 for i=1:length(circleRs)
-	[lats lons] = scircle1(evla,evlo,circleRs(i));
+	[lats,lons] = scircle1(evla,evlo,circleRs(i));
+	geoshow(lats,lons,'color',[0.0235    0.4431    0.5804]);
+	ind = find(lats > 25 & lats < 50 & lons > -125 & lons < -60);
+	textm(mean(lats(ind)),mean(lons(ind)),num2str(circleRs(i)),'fontsize',20,'Color',[0.0235    0.4431    0.5804]);
+end
+circleRs = floor(azi_range(1)/10)*10:10:(ceil(azi_range(2)/10)*10-10);
+rnd = [0:5:180];
+for i=1:length(circleRs)
+	[lats,lons] = reckon(evla,evlo,rnd,circleRs(i));
 	geoshow(lats,lons,'color','k');
 	ind = find(lats > 25 & lats < 50 & lons > -125 & lons < -60);
 	textm(mean(lats(ind)),mean(lons(ind)),num2str(circleRs(i)),'fontsize',20);
-end
-circleRs = floor(azi_range(1)/10)*10:10:ceil(azi_range(2)/10)*10;
-rnd = [0:5:180];
-for i=1:length(circleRs)
-	[lats lons] = reckon(evla,evlo,rnd,circleRs(i));
-	geoshow(lats,lons,'color','b');
-	ind = find(lats > 25 & lats < 50 & lons > -125 & lons < -60);
-	textm(mean(lats(ind)),mean(lons(ind)),num2str(circleRs(i)),'fontsize',15);
 end
 
 figure(90)
 clf
+set(gcf,'color','w');
 ax = usamap('alaska');
-geoshow(ax, states, 'FaceColor', [0.5 0.5 1])
-stah1 = plotm(stlas,stlos,'rv');
+geoshow(ax, states, 'FaceColor', [0.9 0.9 0.9])
+stah1 = plotm(stlas,stlos,'v','MarkerSize',10,'Color',[0.8118    0.1804    0.1922],'MarkerFaceColor',[0.8118    0.1804    0.1922]);
 circleRs = floor(dist_range(1)/10)*10:10:ceil(dist_range(2)/10)*10;
 for i=1:length(circleRs)
 	[lats lons] = scircle1(evla,evlo,circleRs(i));
-	geoshow(lats,lons,'color','k');
+	geoshow(lats,lons,'color',[0.0235    0.4431    0.5804]);
 	ind = find(lats > 50 & lats < 70 & lons > -180 & lons < -130);
-	textm(mean(lats(ind)),mean(lons(ind)),num2str(circleRs(i)),'fontsize',20);
+	textm(mean(lats(ind)),mean(lons(ind)),num2str(circleRs(i)),'fontsize',20,'color',[0.0235    0.4431    0.5804]);
 end
 circleRs = floor(azi_range(1)/10)*10:10:ceil(azi_range(2)/10)*10;
 rnd = [0:5:180];
 for i=1:length(circleRs)
 	[lats lons] = reckon(evla,evlo,rnd,circleRs(i));
-	geoshow(lats,lons,'color','b');
+	geoshow(lats,lons,'color','k');
 	ind = find(lats > 50 & lats < 70 & lons > -180 & lons < -130);
-	textm(mean(lats(ind)),mean(lons(ind)),num2str(circleRs(i)),'fontsize',15);
+	textm(mean(lats(ind)),mean(lons(ind)),num2str(circleRs(i)),'fontsize',20);
 end
 
 figure(91)
 clf
+set(gcf,'color','w');
 ax = worldmap([-90 90],[-145 -35]);
-load coast
-plotm(lat, long)
-stah2 = plotm(stlas,stlos,'rv');
+land = shaperead('landareas.shp','UseGeoCoords',true);
+geoshow(land,'FaceColor',[0.9 0.9 0.9]);
+stah2 = plotm(stlas,stlos,'v','MarkerSize',8,'Color',[0.8118    0.1804    0.1922],'MarkerFaceColor',[0.8118    0.1804    0.1922]);
 circleRs = floor(dist_range(1)/10)*10:10:ceil(dist_range(2)/10)*10;
 for i=1:length(circleRs)
 	[lats lons] = scircle1(evla,evlo,circleRs(i));
-	geoshow(lats,lons,'color','k');
+	geoshow(lats,lons,'color',[0.0235    0.4431    0.5804]);
 	ind = find(lats > 50 & lats < 70 & lons > -180 & lons < -130);
-	textm(mean(lats(ind)),mean(lons(ind)),num2str(circleRs(i)),'fontsize',20);
+	textm(mean(lats(ind)),mean(lons(ind)),num2str(circleRs(i)),'fontsize',20,'color',[0.0235    0.4431    0.5804]);
 end
 circleRs = floor(azi_range(1)/10)*10:10:ceil(azi_range(2)/10)*10;
 rnd = [0:5:180];
 for i=1:length(circleRs)
 	[lats lons] = reckon(evla,evlo,rnd,circleRs(i));
-	geoshow(lats,lons,'color','b');
+	geoshow(lats,lons,'color','k');
 	ind = find(lats > 50 & lats < 70 & lons > -180 & lons < -130);
-	textm(mean(lats(ind)),mean(lons(ind)),num2str(circleRs(i)),'fontsize',15);
+	textm(mean(lats(ind)),mean(lons(ind)),num2str(circleRs(i)),'fontsize',20);
 end
 
 if exist('CMTSOLUTION','file')
