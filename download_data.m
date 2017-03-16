@@ -1,9 +1,9 @@
 clear;
 
-javaaddpath('IRIS-WS-2.0.6.jar');
-load fetchdata.mat
-load phasedb.mat
-load P_time.mat
+% javaaddpath('IRIS-WS-2.0.6.jar');
+load data/fetchdata.mat
+load data/phasedb.mat
+load data/P_time.mat
 setup_parameters
 
 if align_phase~= 'O' && align_phase~= 'P'
