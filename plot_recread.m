@@ -2,13 +2,13 @@
 % written by Ge Jin, jinwar@gmail.com, ge.jin@ldeo
 % 2013-03-29
 %
-load phasedb.mat
+load data/phasedb.mat
 
 setup_parameters
 N_trace = 100;
 
-if exist('fetchdata.mat','file')
-	load fetchdata.mat
+if exist('data/fetchdata.mat','file')
+	load data/fetchdata.mat
 	event_Otime = datenum(event_info.PreferredTime,'yyyy-mm-dd HH:MM:SS.FFF');
 	event_name = datestr(event_Otime,'yyyymmddHHMM');
 end
@@ -399,10 +399,7 @@ while 1
 	end
 
 	[x y bot] = ginput(1);
-	if ~is_dist
-		is_dist = 1;
-		continue;
-	end
+
 	if bot == 'q'
 		break;
 	end
@@ -464,7 +461,11 @@ while 1
 		isfill = ~isfill;
 	end
 	if bot == 'd'
-		is_dist = ~is_dist;
+        if ~is_dist
+            is_dist = 1;
+        else
+            is_dist = ~is_dist;
+        end
 	end
 	if bot == '.'
 		if is_mark
