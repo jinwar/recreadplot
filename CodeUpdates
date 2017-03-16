@@ -6,3 +6,4 @@
 -Added function readCMTfile that reads in Quick CMT file in 'ndk' file format as downloaded from http://www.globalcmt.org/CMTfiles.html (Celia, 3/16/17):
     returns eq structure including focal mechanism and nodal planes
 -Added figure that gets plotted in plot_recread showing focal mechanisms (Celia, 3/16/17)
+-Updated plot_recread to have a new cheat sheet option (-C) where you can click and view only phases arriving near that time/distance (Celia, 3/16/17)
