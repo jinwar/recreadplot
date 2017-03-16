@@ -19,9 +19,10 @@ if length(data) < 1e3
     return
 end
 % Loop throug the different filters
-nfilter = 3;
-snrvec = [0;0;0];
-for ii = 1:nfilter
+nfilter = 1;
+% snrvec = [0;0;0];
+snrvec = zeros(nfilter,1);
+for ii = 2:2
     
     if ii == 1
         freqfilter = highfilter;
@@ -90,17 +91,12 @@ for ii = 1:nfilter
     signal_ind = find(time > tphase-signal_wind & time <= tphase+signal_wind);
     signal_amp = sum(data(signal_ind).^2)/length(signal_ind);
     
-    noise_ind1 = find(time <= tphase-noise_wind & time > tphase-noise_wind*2);
-    noise_ind2 = find(time > tphase+noise_wind & time <= tphase +noise_wind*2);
-
-    % Check to see if the vectors are in a weird shape
-    [m,n] = size(noise_ind1);
-    if m > n
-        noise_ind1 = noise_ind1';
-        noise_ind2 = noise_ind2';
+    if stdist <= 90
+        noise_wind = signal_wind;
+    else
+        noise_wind = signal_wind+500;
     end
-    
-    noise_ind = [noise_ind1,noise_ind2];
+    noise_ind = find(time <= tphase-noise_wind & time > tphase-noise_wind*2);
     noise_amp = sum(data(noise_ind).^2)/length(noise_ind);
     
     % Check to see if the time axis is long enough

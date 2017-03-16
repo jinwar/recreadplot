@@ -72,7 +72,7 @@ for ista = 1:length(sta_mat_files)
     
     % estimate the SNR of the data
     stdist = distance(stla,stlo,evla,evlo);
-    [snr] = estimate_snr(dataZ,new_timeaxis,stdist,evdp);
+    [snr] = estimate_snr(dataZ,new_timeaxis,delta,stdist,evdp);
     
 	% build up structure
 	stadata(ista).stla = stla;
@@ -83,6 +83,8 @@ for ista = 1:length(sta_mat_files)
 	stadata(ista).odataR = dataR;
 	stadata(ista).odataT = dataT;
     stadata(ista).snr = snr;
+    stadata(ista).dist = distance(stla,stlo,evla,evlo);
+    
 end
 
 
