@@ -133,6 +133,16 @@ for i=1:length(circleRs)
 	textm(mean(lats(ind)),mean(lons(ind)),num2str(circleRs(i)),'fontsize',15);
 end
 
+if exist('CMTSOLUTION','file')
+    print('found it')
+    CMTSOLUTION = './CMTSOLUTION';
+    eq = readCMTfile(CMTSOLUTION);  
+    figure(92)
+    radpplot(eq.np1(1),eq.np1(2),eq.np1(3),1,92,[1 3 1]);
+    radpplot(eq.np1(1),eq.np1(2),eq.np1(3),2,92,[1 3 2]);
+    radpplot(eq.np1(1),eq.np1(2),eq.np1(3),3,92,[1 3 3]);
+end
+
 % Gather phase travel-time information
 phasenum = 0;
 eventphases = [];
