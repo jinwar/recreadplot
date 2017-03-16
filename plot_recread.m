@@ -657,8 +657,6 @@ while 1
         dist_range = ylims;
         freq_band = filter;
         comp = component;
-        
-        
     end
     
     %addLinesStart - Martin added URL for station data
