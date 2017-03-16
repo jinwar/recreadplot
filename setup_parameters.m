@@ -1,12 +1,22 @@
-
 % event parameters
 lat_range = [-25 -22];
 lon_range = [-179 -177];
 mag_range = [6.6 7.2];
 start_time = '2017-02-24 0:00:00';
+rrdir = pwd;
+addpath([rrdir,'/matguts']);
+addpath([rrdir,'/data']);
+javaaddpath([rrdir,'/matguts/IRIS-WS-2.0.15.jar']);
+
+% event parameters
+lat_range = [-10 -0];
+lon_range = [140 160];
+mag_range = [6.3 7.2];
+start_time = '2017-03-05 0:00:00';
 search_time_range = 72; % in hour
 
 % station parameters
+%station_network = '_US-ALL';
 %station_network = '_GSN';
 %station_network = 'TA';
 %station_network = '*';
@@ -15,12 +25,14 @@ min_epi_dist = 0;
 max_epi_dist = 180;
 
 % define donwload waveform length
-align_phase = 'P';   % O for original time, P for P phase
+align_phase = 'P';   % 'O' for original time, 'P' for P phase (can actually use any phase, but not recommended other than O|P|S)
 min_before = 10;   % minutes before the phase
 min_after = 110; %  minutes after the phase
 
-% Waveform processing parameters
+% request parameters
+req_opt = 'breqfast'; % 'breqfast' | 'irisFetch'
 
+% Waveform processing parameters
 lowfilter = [200 30];
 midfilter = [25 5];
 highfilter = [5 2];
