@@ -1,5 +1,5 @@
 function [ traces ] = breq_fast_process( label,usrname,stas,chans,nwks,locs,starttimes,ifdelete )
-%[ traces ] = breq_fast_process( label,stas,chans,nwks,locs,starttimes )
+%[ traces ] = breq_fast_process( label,usrname,stas,chans,nwks,locs,starttimes )
 % function to parse and download the output of a BREQ_FAST request that has
 % been accepted and has SEED files waiting on an ftp server. This will
 % download the data and output it as a [Nevt x Nchan] traces structure.

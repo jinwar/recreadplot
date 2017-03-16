@@ -53,7 +53,7 @@ breq_fast_request(label,'recreader',stas,'BH?',nwks,'*',waveform_bgtime,waveform
 % ======================= DATA PROCESSED FROM HERE ========================
 % ============= PROCEED FROM THIS POINT WHEN DATA IS READY ================
 
-tr = breq_fast_process(label,stas,'BH?',nwks,'*',waveform_bgtime);
+tr = breq_fast_process(label,'recreader',stas,'BH?',nwks,'*',waveform_bgtime);
 
 return
 
