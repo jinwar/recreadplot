@@ -58,11 +58,14 @@ comp = 1;
 single_norm = 1;
 amp = 5;
 norm_amp = 1;
+newcheat_max_dist = 3;
+newcheat_max_time = 100;
 isfill = 0;
 is_reduce_v = 0;
 ref_v = 10;
 is_dist = 1;
 is_cheatsheet = 0;
+is_newcheatsheet = 0;
 is_bin = 1;
 is_mark = 0;
 amp_diff_tol = 5;
@@ -296,7 +299,31 @@ while 1
 			textx = interp1(phasedist,phasetime,texty);
 			text(textx,texty,eventphases(ip).name,'color','r','fontsize',20,'linewidth',2);
 		end
-	end
+    end
+    if is_newcheatsheet
+        for ip = 1:length(eventphases)
+            phasedist = eventphases(ip).dists;
+            phasetime = eventphases(ip).times;
+            ind = find(isnan(phasetime));
+            phasetime(ind) = [];
+            phasedist(ind) = [];
+            if is_reduce_v
+				phasetime = phasetime - deg2km(phasedist)./ref_v;
+            end
+            temp1 = abs(phasedist-cheat_loc(2));
+            temp2 = abs(phasetime-cheat_loc(1));
+            ind1 = find(temp1 <= newcheat_max_dist);
+            if (min(temp2(ind1)) <= newcheat_max_time);
+                plot(phasetime,phasedist,'b');
+                texty = dist_range(1) + diff(dist_range)*(.3+rand/5-.2);
+                textx = interp1(phasedist,phasetime,texty);
+                text(textx,texty,eventphases(ip).name,'color','r','fontsize',20,'linewidth',2);
+                texty = dist_range(1) + diff(dist_range)*(.7+rand/5);
+                textx = interp1(phasedist,phasetime,texty);
+                text(textx,texty,eventphases(ip).name,'color','r','fontsize',20,'linewidth',2);
+            end
+        end
+    end
 	if is_dist
 		ylim(dist_range);
 	else
@@ -560,11 +587,48 @@ while 1
 	if bot == '0'
 		freq_band = 0;
 	end
-	if bot == 'c'
+    if bot == 'c'
 		is_cheatsheet = ~is_cheatsheet;
-	end
+    end
+    if bot == 'C'
+        plot(x,y,'b.','MarkerSize',30);
+        pause(0.5)
+        cheat_loc = [x y];
+        is_newcheatsheet = ~is_newcheatsheet;
+    end
 	if bot == 'b'
 		is_bin = ~is_bin;
-	end
+    end
+    
+    %addLinesStart - Martin added URL for station data
+    if bot == 'k'
+        [i,j]=min(abs(dists-y));
+        web(['http://ds.iris.edu/mda/' stadata(j).net '/' stadata(j).stnm])
+        figure(401)
+        axesm('MapProjection','miller','MapLatLimit',[stadata(j).stla-20 stadata(j).stla+20],'MapLonLimit',[stadata(j).stlo-20 stadata(j).stlo+20],'MeridianLabel', 'on','ParallelLabel', 'on');
+        gridm on; framem on; axis off;
+        S = shaperead('landareas.shp', 'UseGeoCoords', true);
+        geoshow(S, 'FaceColor', [0.5 0.5 1])
+        circleRs = floor(dist_range(1)/10)*10:10:ceil(dist_range(2)/10)*10;
+        for i=1:length(circleRs)
+            [lats,lons] = scircle1(evla,evlo,circleRs(i));
+            geoshow(lats,lons,'color',[0.0235    0.4431    0.5804]);
+            ind = find(lats > 50 & lats < 70 & lons > -180 & lons < -130);
+            textm(mean(lats(ind)),mean(lons(ind)),num2str(circleRs(i)),'fontsize',20);
+        end
+        circleRs = floor(azi_range(1)/10)*10:10:ceil(azi_range(2)/10)*10;
+        rnd = 0:5:180;
+        for i=1:length(circleRs)
+            [lats,lons] = reckon(evla,evlo,rnd,circleRs(i));
+            geoshow(lats,lons,'color',[0.0235    0.4431    0.5804]);
+            ind = find(lats > 50 & lats < 70 & lons > -180 & lons < -130);
+            textm(mean(lats(ind)),mean(lons(ind)),num2str(circleRs(i)),'fontsize',15);
+        end
+        [RNG, AZ] = distance(evla,evlo,stadata(j).stla,stadata(j).stlo);
+        plotm(stadata(j).stla,stadata(j).stlo,'v','Color',[0.8118    0.1804    0.192],'MarkerSize',10,'MarkerFaceColor',[0.8118    0.1804    0.192])
+        str = sprintf('%s\n%s\n',['Station: ' stadata(j).stnm '  Network: ' stadata(j).net],['Distance: ' num2str(RNG)],['Azimuth: ' num2str(AZ)]);
+        title(str,'fontsize',15)
+    end
+    %addLinesEnd
 end
 
