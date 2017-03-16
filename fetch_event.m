@@ -1,6 +1,6 @@
 clear;
 
-javaaddpath('IRIS-WS-2.0.6.jar');
+javaaddpath('matguts/IRIS-WS-2.0.15.jar');
 
 setup_parameters;
 
@@ -73,5 +73,5 @@ plotm(evlas(eventid),evlos(eventid),'p','Color',[0.8118    0.1804    0.1922],'ma
 drawnow
 
 
-save fetchdata.mat stations_info event_info
+save('data/fetchdata.mat','stations_info','event_info')
 
