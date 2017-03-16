@@ -1,4 +1,4 @@
-## Updates to record reading code during record reading hackathon  
+ Updates to record reading code during record reading hackathon  
 
 -Added version flag when saving file in prepare_data so that file saves correctly (Celia, 3/16/17)
 -Added functions previously written by Zach to repository (Celia, 3/16/17):
@@ -6,3 +6,5 @@
 -Added function readCMTfile that reads in Quick CMT file in 'ndk' file format as downloaded from http://www.globalcmt.org/CMTfiles.html (Celia, 3/16/17):
     returns eq structure including focal mechanism and nodal planes
 -Added figure that gets plotted in plot_recread showing focal mechanisms (Celia, 3/16/17)
+-Changed directory structure to have all ancillary functions hidden away in "matguts" folder (Zach, 16/3/17)
+-Added latest IRIS jar file (2.0.15) (Zach, 16/3/17) 
