@@ -39,5 +39,9 @@ Sounds:
 s : Play sonified trace from closest seismogram
 S : Play sonified trace from selected station on USA map
 
+Saving image windows:
+g : Save this window view (xlims, ylims, component, filter) 
+G : Access saved window view.
+
 System:
 q : quit
