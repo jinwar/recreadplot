@@ -1,3 +1,6 @@
+rrdir = pwd;
+addpath([rrdir,'/matguts']);
+javaaddpath([rrdir,'/IRIS-WS-2.0.15.jar']);
 
 % event parameters
 lat_range = [-27 -26];
