@@ -17,6 +17,14 @@ if ~exist('stadata','var')
 	load(event_name);
 end
 
+% Check for synthetics
+if exist([event_name,'_synth.mat']) == 2
+    issynth_exist = 1;
+    load([event_name,'_synth']);
+else
+    issynth_exist = 0;
+end
+
 cheatsheetphases = {'P','Pdiff','S','Sdiff','SP',...
 					'PP','PPP','SS','SSS',...
 					'SSP','PSP',...
@@ -66,6 +74,7 @@ is_bin = 1;
 is_mark = 0;
 amp_diff_tol = 5;
 plot_bw = 1; %black and white/color plotting
+is_synth = 0;
 
 figure(89)
 clf
@@ -364,6 +373,89 @@ while 1
 			end
 		end
 	end % end of station loop
+    
+    % BEGIN SYNTHETICS
+    if is_synth
+        for ista = 1:length(stadata_synth)
+            if dists(ista) < dist_range(1) || dists(ista) > dist_range(2)
+                max_amp(ista) = NaN;
+                continue;
+            end
+            timeaxis = stadata_synth(ista).timeaxis;
+            if is_reduce_v
+                timeaxis = timeaxis - deg2km(dists(ista))./ref_v;
+            end
+            ind = find(timeaxis > time_range(1) & timeaxis < time_range(2));
+            data_synth = choose_data(stadata_synth(ista),comp,freq_band);
+            data_synth = data_synth(ind);
+            if ~isempty(data_synth)
+                max_amp(ista) = max(abs(data_synth));
+            else
+                max_amp(ista) = NaN;
+            end
+        end
+        norm_amp = nanmedian(max_amp);
+        dist_bin = linspace(dist_range(1),dist_range(2),N_trace);
+        plot_bin = zeros(size(dist_bin));
+        ind = find(dists>dist_range(1) & dists < dist_range(2));
+    %	azi_range = [min(azi(ind)) max(azi(ind))];
+        azi_bin = linspace(azi_range(1),azi_range(2),N_trace);
+
+        for ista = 1:length(stadata_synth)
+            if dists(ista) < dist_range(1) || dists(ista) > dist_range(2)
+                continue;
+            end
+            [azi_isin azi(ista)] = is_in_azirange(azi(ista),azi_range);
+            is_in_azi(ista) = azi_isin;
+            if ~azi_isin continue; end
+            timeaxis = stadata_synth(ista).timeaxis;
+            snr = stadata(ista).snr;
+            snrmax = 1.2;
+            if is_reduce_v
+                timeaxis = timeaxis - deg2km(dists(ista))./ref_v;
+            end
+            ind = find(timeaxis > time_range(1) & timeaxis < time_range(2));
+            if isempty(ind)
+                continue;
+            end
+            timeaxis = timeaxis(ind);
+            data_synth = choose_data(stadata_synth(ista),comp,freq_band);
+            data_synth = data_synth(ind);
+            if single_norm
+                data_synth = data_synth./max(abs(data_synth));
+            else
+                data_synth = data_synth./norm_amp;
+                if max(abs(data_synth)) > amp_diff_tol
+                    data_synth(:) = 0;
+                end
+            end
+            if is_dist
+                if is_bin
+                    % Find the isgood value of the current station
+                    if isgoodsnr(ista) == 0
+                        continue
+                    end
+                end
+                trace_amp = amp*diff(dist_range)/(2*N_trace);
+                if snr > 0.5
+                    plot(timeaxis,data_synth*trace_amp+dists(ista),'r');
+                end
+            else
+                if is_bin
+                    % Find the isgood value of the current station
+                    if isgoodsnr(ista) == 0
+                        continue
+                    end
+                end
+                trace_amp = amp*diff(azi_range)/(2*N_trace);
+                if snr > 0.5
+                    plot(timeaxis,data_synth*trace_amp+azi(ista),'r');
+                end
+            end
+        end % end of station loop     
+    end
+    % END SYNTHETICS
+    
 	if is_cheatsheet
 		for ip = 1:length(eventphases)
 			phasedist = eventphases(ip).dists;
@@ -737,5 +829,9 @@ while 1
         title(str,'fontsize',15)
     end
     %addLinesEnd
+    
+    if bot=='j' && issynth_exist==1
+        is_synth = ~is_synth;
+	end
 end
 
