@@ -232,10 +232,10 @@ for ip = 1:length(exist_phase_names)
 end
 
 %Read in colormap for plotting phases
-colormap = importdata('matguts/matter.cpt',' ',2);
-color_ind = linspace(colormap.data(1,1),colormap.data(end,1),phasenum_all);
+colormap_cs = importdata('matguts/matter.cpt',' ',2);
+color_ind = linspace(colormap_cs.data(1,1),colormap_cs.data(end,1),phasenum_all);
 color_ind = round(color_ind);
-cmap = flipud([colormap.data(color_ind,2) colormap.data(color_ind,3) colormap.data(color_ind,4)]);
+cmap = flipud([colormap_cs.data(color_ind,2) colormap_cs.data(color_ind,3) colormap_cs.data(color_ind,4)]);
 
 while 1
 
