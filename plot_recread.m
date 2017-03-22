@@ -3,8 +3,8 @@
 % 2013-03-29
 %
 load data/phasedb.mat
+load data/raypath.mat
 
-setup_parameters
 N_trace = 100;
 
 if exist('data/fetchdata.mat','file')
@@ -238,6 +238,11 @@ for ip = 1:length(exist_phase_names)
 		eventphases_all(phasenum_all).alldists = odist;
 		eventphases_all(phasenum_all).alltimes = otime;
 		eventphases_all(phasenum_all).name = char(phases(phaseid).name);
+        
+        alldepths = cell2mat({raypath(ip).event.evdepth});
+        [mindep,depidx] = min(abs(alldepths-evdp));
+        eventphases_all(phasenum_all).depidxs = find(alldepths == alldepths(depidx));
+        eventphases_all(phasenum_all).alldegs = cell2mat({raypath(ip).event(eventphases_all(phasenum_all).depidxs).evdeg});
 end
 
 %Read in colormap for plotting phases
@@ -245,8 +250,6 @@ colormap_cs = importdata('matguts/matter.cpt',' ',2);
 color_ind = linspace(colormap_cs.data(1,1),colormap_cs.data(end,1),phasenum_all);
 color_ind = round(color_ind);
 cmap = flipud([colormap_cs.data(color_ind,2) colormap_cs.data(color_ind,3) colormap_cs.data(color_ind,4)]);
-
-first_pass = 1;
 
 while 1
 
@@ -317,13 +320,6 @@ while 1
                 end
 			end
 			trace_amp = amp*diff(dist_range)/(2*N_trace);
-            
-            if first_pass == 1
-                trace_amp_orig = trace_amp;
-                first_pass = 0;
-            end            
-            trace_amp = trace_amp_orig;
-            
             if snr > 0.5
             if (plot_bw==1)
                 plot(timeaxis,data*trace_amp+dists(ista),'k');
@@ -485,6 +481,8 @@ while 1
 		end
     end
     if is_newcheatsheet
+        figure(93)
+        clf
         for ip = 1:length(eventphases_all)
             phasedist = eventphases_all(ip).dists;
             phasetime = eventphases_all(ip).times;
@@ -498,6 +496,9 @@ while 1
             temp2 = abs(phasetime-cheat_loc(1));
             ind1 = find(temp1 <= newcheat_max_dist);
             if (min(temp2(ind1)) <= newcheat_max_time);
+                figure(99)
+                plot(cheat_loc(1),cheat_loc(2),'b.','MarkerSize',30);
+                hold on
                 plot(phasetime,phasedist,'Color',cmap(ip,:)./256,'LineWidth',2.5);
                 texty = dist_range(1) + diff(dist_range)*(.3+rand/5-.2);
                 textx = interp1(phasedist,phasetime,texty);
@@ -505,8 +506,16 @@ while 1
                 texty = dist_range(1) + diff(dist_range)*(.7+rand/5);
                 textx = interp1(phasedist,phasetime,texty);
                 text(textx,texty,eventphases_all(ip).name,'Color',cmap(ip,:)./256,'fontsize',20,'linewidth',2);
+
+                [mindeg,degidx] = min(abs(eventphases_all(ip).alldegs-cheat_loc(2)));
+                phaseidx = eventphases_all(ip).depidxs(degidx);
+                raydist = raypath(ip).event(phaseidx).distance;
+                raydepth = raypath(ip).event(phaseidx).depth;
+                
+                plot_raypaths(raydist,raydepth,cmap(ip,:)./256);
             end
         end
+        figure(99)
     end
 	if is_dist
 		ylim(dist_range);

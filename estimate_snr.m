@@ -38,7 +38,7 @@ for ii = 2:2
     data = filtfilt(filtb,filta,saved_data);
     
     % Load in the travel time data
-    load phasedb
+    load data/phasedb.mat
     
     % If the station is within 90 degrees use the P
     if stdist < 90
@@ -50,7 +50,7 @@ for ii = 2:2
         end
         
     else
-        phasei = 3;
+        phasei = 15;
         
         if ~strcmp(phases(phasei).name,'PP')
             error('Cant identify the P arrival in the structure!')
