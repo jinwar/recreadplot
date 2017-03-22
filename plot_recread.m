@@ -5,7 +5,6 @@
 load data/phasedb.mat
 load data/raypath.mat
 
-setup_parameters
 N_trace = 100;
 
 if exist('data/fetchdata.mat','file')
