@@ -497,6 +497,8 @@ while 1
             ind1 = find(temp1 <= newcheat_max_dist);
             if (min(temp2(ind1)) <= newcheat_max_time);
                 figure(99)
+                plot(cheat_loc(1),cheat_loc(2),'b.','MarkerSize',30);
+                hold on
                 plot(phasetime,phasedist,'Color',cmap(ip,:)./256,'LineWidth',2.5);
                 texty = dist_range(1) + diff(dist_range)*(.3+rand/5-.2);
                 textx = interp1(phasedist,phasetime,texty);
