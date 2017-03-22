@@ -246,6 +246,8 @@ color_ind = linspace(colormap_cs.data(1,1),colormap_cs.data(end,1),phasenum_all)
 color_ind = round(color_ind);
 cmap = flipud([colormap_cs.data(color_ind,2) colormap_cs.data(color_ind,3) colormap_cs.data(color_ind,4)]);
 
+first_pass = 1;
+
 while 1
 
 
@@ -315,6 +317,13 @@ while 1
                 end
 			end
 			trace_amp = amp*diff(dist_range)/(2*N_trace);
+            
+            if first_pass == 1
+                trace_amp_orig = trace_amp;
+                first_pass = 0;
+            end            
+            trace_amp = trace_amp_orig;
+            
             if snr > 0.5
             if (plot_bw==1)
                 plot(timeaxis,data*trace_amp+dists(ista),'k');
