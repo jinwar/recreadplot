@@ -5,6 +5,8 @@
 load data/phasedb.mat
 load data/raypath.mat
 
+setup_parameters
+
 N_trace = 100;
 
 if exist('data/fetchdata.mat','file')
@@ -252,6 +254,7 @@ color_ind = round(color_ind);
 cmap = flipud([colormap_cs.data(color_ind,2) colormap_cs.data(color_ind,3) colormap_cs.data(color_ind,4)]);
 
 first_pass = 1;
+first_pass_syn = 1;
 
 while 1
 
@@ -390,6 +393,12 @@ while 1
 	end % end of station loop
     
     % BEGIN SYNTHETICS
+    if first_pass_syn == 1
+        amp_dist_syn = diff(dist_range)/(2*N_trace);
+        amp_azi_syn = diff(azi_range)/(2*N_trace);
+        first_pass_syn = 0;
+    end
+    
     if is_synth
         for ista = 1:length(stadata_synth)
             if dists(ista) < dist_range(1) || dists(ista) > dist_range(2)
@@ -452,7 +461,8 @@ while 1
                     end
                 end
                 trace_amp = amp*diff(dist_range)/(2*N_trace);
-                if snr > 0.5
+                trace_amp = amp*amp_dist_syn;
+                if snr > 0.5 
                     plot(timeaxis,data_synth*trace_amp+dists(ista),'r');
                 end
             else
@@ -463,6 +473,8 @@ while 1
                     end
                 end
                 trace_amp = amp*diff(azi_range)/(2*N_trace);
+%               trace_amp = amp*amp_azi_syn;
+
                 if snr > 0.5
                     plot(timeaxis,data_synth*trace_amp+azi(ista),'r');
                 end
@@ -503,6 +515,7 @@ while 1
             phasedist(ind) = [];
             if is_reduce_v
 				phasetime = phasetime - deg2km(phasedist)./ref_v;
+                cheat_loc(1) = cheat_loc(1) - deg2km(cheat_loc(2))./ref_v;
             end
             temp1 = abs(phasedist-cheat_loc(2));
             temp2 = abs(phasetime-cheat_loc(1));
