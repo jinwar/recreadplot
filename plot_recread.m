@@ -504,7 +504,9 @@ while 1
     end
     if is_newcheatsheet
         figure(93)
+        if cheatflag==0
         clf
+        end
         for ip = 1:length(eventphases_all)
             phasedist = eventphases_all(ip).dists;
             phasetime = eventphases_all(ip).times;
@@ -535,9 +537,13 @@ while 1
                 raydist = raypath(ip).event(phaseidx).distance;
                 raydepth = raypath(ip).event(phaseidx).depth;
                 
+                if cheatflag ==0
                 plot_raypaths(raydist,raydepth,cmap(ip,:)./256);
+                
+                end
             end
         end
+        cheatflag=1;
         figure(99)
     end
 	if is_dist
@@ -817,6 +823,7 @@ while 1
 		is_cheatsheet = ~is_cheatsheet;
     end
     if bot == 'C'
+        cheatflag=0;
         plot(x,y,'b.','MarkerSize',30);
         pause(0.5)
         cheat_loc = [x y];
