@@ -462,7 +462,7 @@ while 1
                 end
                 trace_amp = amp*diff(dist_range)/(2*N_trace);
                 trace_amp = amp*amp_dist_syn;
-                if snr > 0.5
+                if snr > 0.5 
                     plot(timeaxis,data_synth*trace_amp+dists(ista),'r');
                 end
             else
