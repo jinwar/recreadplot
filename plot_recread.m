@@ -852,6 +852,7 @@ while 1
         [i,j]=min(abs(dists-y));
         web(['http://ds.iris.edu/mda/' stadata(j).net '/' stadata(j).stnm])
         figure(401)
+        clf;
         axesm('MapProjection','miller','MapLatLimit',[stadata(j).stla-20 stadata(j).stla+20],'MapLonLimit',[stadata(j).stlo-20 stadata(j).stlo+20],'MeridianLabel', 'on','ParallelLabel', 'on');
         gridm on; framem on; axis off;
         S = shaperead('landareas.shp', 'UseGeoCoords', true);
