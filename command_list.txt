@@ -25,13 +25,25 @@ f : fill the area above zero
 a + 1-9 : change the amplitude
 n : change between individual normalize or global normalize
 d : change between distance plot and azimuth plot
+w : color traces based on azimuth
 e : change azimuth range (type in)
 b : plot all data or plot bin data (bin data only plots one trace in each bin, not stacking)
 . : adding a marker or delete the existing one.
+j : plot synthetic seismograms (must first run prepare_synthetics.m)
 
 Other information:
 / : show station map within the distance range
 c : bring out phase cheat sheet
+C : new cheatsheet
+k : get station data from IRIS and plots a map
+
+Sounds:
+s : Play sonified trace from closest seismogram
+S : Play sonified trace from selected station on USA map
+
+Saving image windows:
+g : Save this window view (xlims, ylims, component, filter) 
+G : Access saved window view.
 
 System:
 q : quit

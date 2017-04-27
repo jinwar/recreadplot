@@ -1,4 +1,4 @@
-## Updates to record reading code during record reading hackathon  
+ Updates to record reading code during record reading hackathon  
 
 -Added version flag when saving file in prepare_data so that file saves correctly (Celia, 3/16/17)
 -Added functions previously written by Zach to repository (Celia, 3/16/17):
@@ -6,3 +6,27 @@
 -Added function readCMTfile that reads in Quick CMT file in 'ndk' file format as downloaded from http://www.globalcmt.org/CMTfiles.html (Celia, 3/16/17):
     returns eq structure including focal mechanism and nodal planes
 -Added figure that gets plotted in plot_recread showing focal mechanisms (Celia, 3/16/17)
+-Added function estimate_snr.m to estimate the SNR of a given trace. Function is called within the prepare_data.m script
+-Updated plot_recread to have a new cheat sheet option (-C) where you can click and view only phases arriving near that time/distance (Celia, 3/16/17)
+-Changed directory structure to have all ancillary functions hidden away in "matguts" folder (Zach, 16/3/17)
+-Added latest IRIS jar file (2.0.15) (Zach, 16/3/17) 
+-Updated fetch_events.m to be compatible with new directory structure. Moved /.mat files to data folder. (Zach, 16/3/17)
+-Updated prepare_data.m and plot_recread to add station info functionality using 'k' keyword (Martin, 16/3/17)
+-Updated command_list.txt (Martin, 16/3/17)
+-Updated plots in fetchdata and plot_recread (Martin, 16/3/17)
+-Added additional phases to the phasedb.mat file and added path line to the make_phasedb.m file for calling taup. Changed path for phasedb.mat in make_phasedb.m (Helen,3/16/17)
+-Added latest version of irisFetch.m (has some nice tools in there) (Zach, 16/3/17)
+-Updated download_data.m script to be able to do bulk downloads using BREAFAST tool (Zach, 16/3/17)
+-Updated prepare_data.m and plot_recread to add station info functionality using 'k' keyword (Martin, 16/3/17)
+-Updated command_list.txt (Martin, 16/3/17)
+-Updated plots in fetchdata and plot_recread (Martin, 16/3/17)
+-Updated plot_recread so new cheatsheet pulls phases from the full database (Celia, 3/16/17)
+-Added additional phases to the phasedb.mat file and added path line to the make_phasedb.m file for calling taup. Changed path for phasedb.mat in make_phasedb.m (Helen,3/16/17)
+-Added latest version of irisFetch.m (has some nice tools in there) (Zach, 16/3/17)
+-Updated download_data.m script to be able to do bulk downloads using BREAFAST tool (Zach, 16/3/17)
+-Changed plot_recread script so that the azimuth range is between -180 and 180 for all events (Celia, 3/16/17)
+-Modified prepare_data to save the event - station distance (Natalie, 3/16/17)
+-Added lines to plot_recread.m to pick out the trace with the highest SNR per 2 degree distance bin (Natalie, 3/16/17)
+-Changed plot_recread script so that the azimuth range is between -180 and 180 for all events (Celia, 3/16/17)
+-Changed colorscale for plotting phases in new cheatsheet (Celia, 3/16/17)
+-Added (optional) ability to plot synthetics on top of the data. The only extra step is run prepare_synthetics.m. Requires python3 and instaseis (Josh & Yen Joe, 3/16/17)
