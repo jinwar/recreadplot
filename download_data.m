@@ -81,14 +81,14 @@ end
 
 %% irisFetch, station-by-station. SLOW but steady....
 if strcmp(req_opt,'irisFetch')
-    for ista = 1:length(stations_info)
+    for is = 1:length(stations_info)
         if exist(filenames{is},'file')
-            disp(['Found data file:',filename,', Skip!'])
+            disp(['Found data file:',filenames{is},', Skip!'])
             continue;
         end
         waveform_bgtime_str = datestr(waveform_bgtime(is));
         waveform_edtime_str = datestr(waveform_edtime(is));
-        disp(['Downloading station: ',stnm,' From:',waveform_bgtime_str,' To:',waveform_edtime_str]);
+        disp(['Downloading station: ',stas{is},' From:',waveform_bgtime_str,' To:',waveform_edtime_str]);
         try
             traces = irisFetch.Traces(nwks{is},stas{is},'*','BH?',waveform_bgtime_str,waveform_edtime_str,'includePZ');
             save(filenames{is},'traces');
